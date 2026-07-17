@@ -1,0 +1,364 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Casa Monarca Conecta - Bienvenidos" description="Inicia sesión para registrarte en los eventos de ayuda humanitaria de Casa Monarca.">
+  <main class="min-h-screen flex flex-col items-center justify-center p-6 md:p-12 relative overflow-hidden bg-background">
+    <!-- Círculos decorativos con colores del tema para dar estética premium -->
+    <div class="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-primary/5 blur-3xl"></div>
+    <div class="absolute -bottom-40 -left-40 w-96 h-96 rounded-full bg-secondary/5 blur-3xl"></div>
+
+    <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-12 items-center z-10">
+      
+      <!-- Contenido Informativo (Hero Section) -->
+      <div class="flex flex-col gap-6 text-left">
+        <div class="inline-flex items-center gap-2 bg-primary/10 text-primary py-1 px-3 rounded-full text-xs font-semibold w-fit">
+          <span>🦋</span> Portal del Voluntariado
+        </div>
+        <h1 class="text-4xl md:text-5xl font-extrabold text-secondary tracking-tight font-display leading-tight">
+          Construye caminos de <span class="text-primary">esperanza</span> y apoyo.
+        </h1>
+        <p class="text-gray-600 leading-relaxed text-base">
+          Casa Monarca Conecta es la plataforma para gestionar tu participación en eventos de ayuda humanitaria a migrantes en Monterrey. Inscríbete en turnos, reporta tus horas de impacto y sé parte de la red de acompañamiento solidario.
+        </p>
+        <div class="flex items-center gap-4 text-xs font-semibold text-gray-500 uppercase tracking-widest mt-2">
+          <span>✔ Sin sobrecupos</span>
+          <span>•</span>
+          <span>✔ Trazabilidad de Horas</span>
+        </div>
+      </div>
+
+      <!-- Card de Inicio de Sesión -->
+      <div class="bg-surface rounded-3xl p-8 border border-gray-100 shadow-xl flex flex-col gap-6">
+        
+        <!-- Encabezado de la Tarjeta (Visible en login) -->
+        <div id="login-header" class="text-center flex flex-col gap-1.5 border-b border-gray-50 pb-4">
+          <h2 class="text-2xl font-bold text-secondary tracking-tight">
+            Comienza a Ayudar
+          </h2>
+          <p class="text-gray-500 text-sm">
+            Ingresa tu correo y contraseña para acceder
+          </p>
+        </div>
+
+        <!-- Formulario por Correo y Contraseña -->
+        <form id="email-login-form" class="flex flex-col gap-4 text-left">
+          <div>
+            <label for="input-email" class="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
+              Correo Electrónico
+            </label>
+            <input 
+              type="email" 
+              id="input-email" 
+              placeholder="Ej. voluntario@sistema.com o admin@sistema.com"
+              class="w-full bg-background border border-gray-200 rounded-pill px-4 py-2.5 text-sm font-medium text-secondary focus:outline-none focus:border-primary" 
+              required
+            />
+          </div>
+
+          <div>
+            <label for="input-password" class="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
+              Contraseña
+            </label>
+            <input 
+              type="password" 
+              id="input-password" 
+              placeholder="Mínimo 6 caracteres"
+              class="w-full bg-background border border-gray-200 rounded-pill px-4 py-2.5 text-sm font-medium text-secondary focus:outline-none focus:border-primary" 
+              required
+            />
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 mt-2">
+            <button type="button" id="btn-registrar" class="btn-secondary py-3 text-sm font-bold shadow-none border border-secondary/15">
+              Registrarse
+            </button>
+            <button type="submit" id="btn-login" class="btn-primary py-3 text-sm font-bold">
+              Iniciar Sesión
+            </button>
+          </div>
+        </form>
+
+        <!-- Contenedor de Sesión Activa (Se muestra dinámicamente si ya hay sesión) -->
+        <div id="sesion-activa-container" class="hidden flex flex-col gap-6 text-center py-4">
+          <div class="flex flex-col items-center justify-center w-20 h-20 rounded-full bg-primary/10 text-primary text-3xl font-black mx-auto uppercase border-2 border-primary/20" id="sesion-avatar">
+            U
+          </div>
+          <div>
+            <h3 class="font-bold text-xl text-secondary tracking-tight" id="sesion-saludo">
+              ¡Hola de nuevo!
+            </h3>
+            <p class="text-xs text-gray-500 mt-1" id="sesion-rol-info">
+              Has iniciado sesión de forma segura.
+            </p>
+          </div>
+
+          <div class="flex flex-col gap-3">
+            <a href="/voluntario/eventos" id="btn-ir-panel" class="btn-primary py-3 text-sm font-bold w-full text-center block shadow-sm">
+              Ir a Catálogo de Eventos
+            </a>
+            <button id="btn-cerrar-sesion-landing" class="btn-secondary py-3 text-sm font-bold w-full text-center block border border-secondary/15 hover:bg-gray-50">
+              Cerrar Sesión (Cambiar cuenta)
+            </button>
+          </div>
+        </div>
+
+        <!-- Secciones Sociales (Ocultas si hay sesión activa) -->
+        <div id="social-divider" class="relative flex items-center justify-center my-1">
+          <div class="border-t border-gray-100 w-full"></div>
+          <span class="absolute bg-surface px-4 text-xs text-gray-400 font-medium">O accede con</span>
+        </div>
+
+        <div id="social-buttons" class="flex flex-col gap-3">
+          <div class="grid grid-cols-2 gap-3">
+            <button id="btn-google" class="btn-secondary py-2.5 text-xs font-semibold flex items-center justify-center gap-2 hover:bg-secondary-hover border border-secondary/10">
+              <span class="text-base font-bold">G</span> Google
+            </button>
+            <button id="btn-facebook" class="btn-secondary py-2.5 text-xs font-semibold flex items-center justify-center gap-2 hover:bg-secondary-hover border border-secondary/10">
+              <span class="text-base font-bold">f</span> Facebook
+            </button>
+          </div>
+          
+          <button id="btn-voluntario" class="text-xs text-gray-400 hover:text-primary transition-colors font-bold underline mt-1">
+            Entrar de Prueba (Sin Login/Bypass)
+          </button>
+        </div>
+
+        <div class="text-center text-xs text-gray-400 mt-2 leading-relaxed">
+          Al iniciar sesión, aceptas que tus datos sean tratados conforme a nuestro aviso de privacidad simplificado bajo la Ley LFPDPPP de México.
+        </div>
+      </div>
+      
+    </div>
+  </main>
+</Layout>
+
+<script>
+  declare var SwalApp: any;
+  import { supabase } from '../utils/supabase';
+
+  // Decodificador de JWT
+  function parseJwt(token: string): any {
+    try {
+      const base64Url = token.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      return JSON.parse(atob(base64));
+    } catch {
+      return null;
+    }
+  }
+
+  // Manejador del botón de voluntario directo (para desarrollo/bypass de testing)
+  document.getElementById("btn-voluntario")?.addEventListener("click", () => {
+    window.location.href = "/voluntario/eventos";
+  });
+
+  // Manejador del botón Registrarse
+  document.getElementById("btn-registrar")?.addEventListener("click", async (e) => {
+    e.preventDefault();
+    const email = (document.getElementById("input-email") as HTMLInputElement).value.trim();
+    const password = (document.getElementById("input-password") as HTMLInputElement).value;
+
+    if (!email || !password) {
+      SwalApp.fire({ title: 'Campos vacíos', text: 'Por favor ingresa tu correo y contraseña.', icon: 'warning' });
+      return;
+    }
+
+    if (password.length < 6) {
+      SwalApp.fire({ title: 'Contraseña corta', text: 'La contraseña debe tener al menos 6 caracteres.', icon: 'warning' });
+      return;
+    }
+
+    const btn = document.getElementById("btn-registrar") as HTMLButtonElement | null;
+    if (btn) {
+      btn.disabled = true;
+      btn.innerText = "Registrando...";
+    }
+
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password
+      });
+
+      if (error) throw error;
+
+      if (data?.session) {
+        localStorage.setItem("token", data.session.access_token);
+        SwalApp.fire({
+          title: 'Registro exitoso',
+          text: 'Redirigiendo a completar tu perfil de voluntario...',
+          icon: 'success',
+          timer: 2000,
+          showConfirmButton: false
+        }).then(() => {
+          window.location.href = "/voluntario/onboarding";
+        });
+      } else {
+        SwalApp.fire({ title: 'Usuario registrado', text: '¡Usuario registrado con éxito en tu Supabase! Ya puedes iniciar sesión.', icon: 'success' });
+      }
+    } catch (err: any) {
+      console.error("Error al registrarse:", err);
+      SwalApp.fire({ title: 'Error al registrarse', text: err.message || "Ocurrió un error.", icon: 'error' });
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerText = "Registrarse";
+      }
+    }
+  });
+
+  // Manejador del submit de Iniciar Sesión
+  document.getElementById("email-login-form")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = (document.getElementById("input-email") as HTMLInputElement).value.trim();
+    const password = (document.getElementById("input-password") as HTMLInputElement).value;
+    const btn = document.getElementById("btn-login") as HTMLButtonElement | null;
+
+    if (btn) {
+      btn.disabled = true;
+      btn.innerText = "Ingresando...";
+    }
+
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) throw error;
+      
+    } catch (err: any) {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerText = "Iniciar Sesión";
+      }
+      console.error("Error al iniciar sesión:", err);
+      SwalApp.fire({ title: 'Error de acceso', text: err.message || "Verifica tu correo y contraseña.", icon: 'error' });
+    }
+  });
+
+  // Manejador de eventos OAuth Google
+  document.getElementById("btn-google")?.addEventListener("click", async (e) => {
+    e.preventDefault();
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin + '/voluntario/eventos'
+        }
+      });
+      if (error) throw error;
+    } catch (err: any) {
+      console.error("Error al iniciar sesion con Google:", err.message);
+      SwalApp.fire({ title: 'Error de autenticación', text: 'Error de autenticación con Google. Intente de nuevo.', icon: 'error' });
+    }
+  });
+
+  // Manejador de eventos OAuth Facebook
+  document.getElementById("btn-facebook")?.addEventListener("click", async (e) => {
+    e.preventDefault();
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'facebook',
+        options: {
+          redirectTo: window.location.origin + '/voluntario/eventos'
+        }
+      });
+      if (error) throw error;
+    } catch (err: any) {
+      console.error("Error al iniciar sesion con Facebook:", err.message);
+      SwalApp.fire({ title: 'Error de autenticación', text: 'Error de autenticación con Facebook. Intente de nuevo.', icon: 'error' });
+    }
+  });
+
+  // Manejador de Cerrar Sesión en la Landing
+  document.getElementById("btn-cerrar-sesion-landing")?.addEventListener("click", async () => {
+    const btn = document.getElementById("btn-cerrar-sesion-landing") as HTMLButtonElement | null;
+    if (btn) {
+      btn.disabled = true;
+      btn.innerText = "Cerrando Sesión...";
+    }
+
+    localStorage.removeItem("token");
+    try {
+      await supabase.auth.signOut();
+    } catch (err) {
+      console.error("Error al cerrar sesión:", err);
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerText = "Cerrar Sesión (Cambiar cuenta)";
+      }
+    }
+  });
+
+  // Configurar el listener global de autenticación de Supabase
+  supabase.auth.onAuthStateChange((event, session) => {
+    const header = document.getElementById("login-header");
+    const form = document.getElementById("email-login-form");
+    const activeContainer = document.getElementById("sesion-activa-container");
+    const socialDivider = document.getElementById("social-divider");
+    const socialButtons = document.getElementById("social-buttons");
+
+    if (session) {
+      // Guardar el token en el almacenamiento local
+      localStorage.setItem('token', session.access_token);
+      
+      // Ocultar formulario de login
+      header?.classList.add("hidden");
+      form?.classList.add("hidden");
+      socialDivider?.classList.add("hidden");
+      socialButtons?.classList.add("hidden");
+
+      // Mostrar contenedor de sesión activa
+      activeContainer?.classList.remove("hidden");
+
+      // Decodificar el token para extraer información
+      const payload = parseJwt(session.access_token);
+      const email = payload?.email || "";
+      const nombre = payload?.user_metadata?.full_name || payload?.user_metadata?.name || email || "Voluntario";
+      
+      // Personalizar el avatar y el saludo
+      const avatar = document.getElementById("sesion-avatar");
+      const saludo = document.getElementById("sesion-saludo");
+      const rolInfo = document.getElementById("sesion-rol-info");
+      const btnPanel = document.getElementById("btn-ir-panel") as HTMLAnchorElement | null;
+
+      if (avatar) {
+        avatar.innerText = nombre.substring(0, 2).toUpperCase();
+      }
+      if (saludo) {
+        saludo.innerText = `¡Hola, ${nombre.split(" ")[0]}!`;
+      }
+
+      // Evaluar rol localmente basado en el correo para testing
+      if (email.toLowerCase().startsWith("admin")) {
+        if (rolInfo) rolInfo.innerText = "Has ingresado con privilegios de Administrador.";
+        if (btnPanel) {
+          btnPanel.innerText = "Ir al Panel de Administración";
+          btnPanel.href = "/admin/dashboard";
+        }
+      } else {
+        if (rolInfo) rolInfo.innerText = "Has ingresado con tu cuenta de Voluntario.";
+        if (btnPanel) {
+          btnPanel.innerText = "Ir a Catálogo de Eventos";
+          btnPanel.href = "/voluntario/eventos";
+        }
+      }
+
+    } else {
+      // Si la sesión fue eliminada o no hay sesión activa
+      localStorage.removeItem('token');
+
+      // Restaurar formulario de login
+      header?.classList.remove("hidden");
+      form?.classList.remove("hidden");
+      socialDivider?.classList.remove("hidden");
+      socialButtons?.classList.remove("hidden");
+
+      // Ocultar contenedor de sesión activa
+      activeContainer?.classList.add("hidden");
+    }
+  });
+</script>

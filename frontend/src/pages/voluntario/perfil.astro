@@ -1,0 +1,422 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+---
+
+<Layout title="Mi Perfil - Casa Monarca">
+  <Navbar />
+  
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8 text-left">
+    
+    <!-- Encabezado de Perfil -->
+    <div class="border-b border-gray-100 pb-6">
+      <h1 class="text-3xl font-extrabold text-secondary tracking-tight font-display">
+        Mi Perfil
+      </h1>
+      <p class="text-gray-500 text-sm mt-1">
+        Gestiona y actualiza tu información de contacto o credenciales de acceso de forma segura.
+      </p>
+    </div>
+
+    <!-- Aviso de Administrador -->
+    <div id="aviso-admin" class="hidden bg-slate-50 border border-slate-200 rounded-3xl p-6 shadow-sm text-center text-slate-600 font-semibold">
+      🔒 Perfil de Administrador: Panel de métricas deshabilitado para este rol.
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      
+      <!-- Panel Izquierdo: Formularios de Perfil y Contraseña -->
+      <div class="md:col-span-2 flex flex-col gap-8">
+        
+        <!-- Formulario de Información Personal -->
+        <div id="seccion-contacto" class="bg-surface border border-gray-100 rounded-3xl p-6 shadow-sm flex flex-col gap-6">
+          <div>
+            <h3 class="font-bold text-lg text-secondary tracking-tight">
+              Actualizar Información de Contacto
+            </h3>
+            <p class="text-xs text-gray-400 mt-0.5">
+              Tu nombre y teléfono son obligatorios para poder inscribirte en eventos de voluntariado.
+            </p>
+          </div>
+
+          <form id="perfil-form" class="flex flex-col gap-4">
+            <div>
+              <label for="nombre-input" class="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
+                Nombre Completo
+              </label>
+              <input 
+                type="text" 
+                id="nombre-input" 
+                placeholder="Actualiza tu nombre completo"
+                class="w-full bg-background border border-gray-200 rounded-pill px-4 py-2.5 text-sm font-medium text-secondary focus:outline-none focus:border-primary" 
+                required
+              />
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
+                Correo Electrónico
+              </label>
+              <input 
+                type="email" 
+                id="correo-display" 
+                class="w-full bg-gray-50 border border-gray-100 rounded-pill px-4 py-2.5 text-sm font-medium text-gray-500 cursor-not-allowed" 
+                readonly 
+              />
+            </div>
+
+            <div>
+              <label for="telefono-input" class="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
+                Teléfono (10 dígitos)
+              </label>
+              <input 
+                type="tel" 
+                id="telefono-input" 
+                pattern="[0-9]{10}"
+                placeholder="Ej. 8110002000"
+                class="w-full bg-background border border-gray-200 rounded-pill px-4 py-2.5 text-sm font-medium text-secondary focus:outline-none focus:border-primary" 
+                required
+              />
+            </div>
+
+            <button type="submit" id="btn-guardar" class="btn-primary w-full mt-2 font-bold py-3 text-sm shadow-sm hover:shadow">
+              Guardar Cambios
+            </button>
+          </form>
+        </div>
+
+        <!-- Formulario de Actualizar Contraseña (Ocultable por proveedor) -->
+        <div id="password-section" class="bg-surface border border-gray-100 rounded-3xl p-6 shadow-sm flex flex-col gap-6 animate-scale-up">
+          <div>
+            <h3 class="font-bold text-lg text-secondary tracking-tight">
+              Actualizar Contraseña
+            </h3>
+            <p class="text-xs text-gray-400 mt-0.5">
+              Elige una nueva contraseña de inicio de sesión.
+            </p>
+          </div>
+
+          <form id="password-form" class="flex flex-col gap-4">
+            <div>
+              <label for="password-input" class="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
+                Nueva Contraseña
+              </label>
+              <input 
+                type="password" 
+                id="password-input" 
+                placeholder="Mínimo 6 caracteres"
+                class="w-full bg-background border border-gray-200 rounded-pill px-4 py-2.5 text-sm font-medium text-secondary focus:outline-none focus:border-primary" 
+                required
+                minlength="6"
+              />
+            </div>
+
+            <div>
+              <label for="confirm-password-input" class="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
+                Confirmar Contraseña
+              </label>
+              <input 
+                type="password" 
+                id="confirm-password-input" 
+                placeholder="Repite la contraseña"
+                class="w-full bg-background border border-gray-200 rounded-pill px-4 py-2.5 text-sm font-medium text-secondary focus:outline-none focus:border-primary" 
+                required
+                minlength="6"
+              />
+            </div>
+
+            <button type="submit" id="btn-password" class="btn-primary w-full mt-2 font-bold py-3 text-sm shadow-sm hover:shadow">
+              Actualizar Contraseña
+            </button>
+          </form>
+        </div>
+
+      </div>
+
+      <!-- Panel Derecho: Impacto Acumulado -->
+      <div id="seccion-impacto" class="bg-surface border border-gray-100 rounded-3xl p-6 shadow-sm flex flex-col items-center justify-between text-center gap-6 h-fit md:sticky md:top-24">
+        <div>
+          <h3 class="font-bold text-lg text-secondary tracking-tight">
+            Impacto Acumulado
+          </h3>
+          <p class="text-xs text-gray-400 mt-0.5">
+            Métricas de participación confirmadas por el administrador.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-4 w-full">
+          <!-- Bloque Métrico: Horas Asistidas -->
+          <div class="bg-primary/5 rounded-2xl p-4 border border-primary/10 flex flex-col items-center">
+            <span id="total-horas-impacto" class="text-3xl font-black text-primary">0</span>
+            <span class="text-[10px] font-bold uppercase text-secondary tracking-wider mt-1">Horas Asistidas</span>
+          </div>
+
+          <!-- Bloque Métrico: Eventos Completados -->
+          <div class="bg-secondary/5 rounded-2xl p-4 border border-secondary/10 flex flex-col items-center">
+            <span id="total-eventos-impacto" class="text-3xl font-black text-secondary">0</span>
+            <span class="text-[10px] font-bold uppercase text-secondary tracking-wider mt-1">Eventos Completados</span>
+          </div>
+        </div>
+
+        <div class="text-xs text-gray-500 font-semibold uppercase tracking-wider leading-relaxed">
+          🦋 ¡Gracias por tu servicio solidario!
+        </div>
+      </div>
+      
+    </div>
+
+    <!-- Sección de Eventos Asistidos -->
+    <div id="seccion-historial" class="bg-surface border border-gray-100 rounded-3xl p-6 shadow-sm flex flex-col gap-4">
+      <h3 class="font-bold text-lg text-secondary tracking-tight">
+        Historial de Actividades Asistidas
+      </h3>
+      <div id="historial-eventos" class="text-sm text-gray-500 py-4">
+        Cargando historial de participación...
+      </div>
+    </div>
+
+  </main>
+</Layout>
+
+<script>
+  declare var SwalApp: any;
+  import { obtenerImpacto, actualizarPerfil, obtenerPerfil } from '../../utils/api';
+  import { supabase } from '../../utils/supabase';
+
+  // Decodificador de JWT ligero
+  function parseJwt(token: string) {
+    try {
+      const base64Url = token.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      return JSON.parse(atob(base64));
+    } catch {
+      return null;
+    }
+  }
+
+  async function cargarPerfil() {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "/";
+      return;
+    }
+
+    const payload = parseJwt(token);
+    const email = payload?.email || "";
+    const isAdmin = email.toLowerCase().startsWith("admin");
+
+    // Lógica de Segregación de Roles
+    if (isAdmin) {
+      const seccionImpacto = document.getElementById("seccion-impacto");
+      const seccionHistorial = document.getElementById("seccion-historial");
+      const seccionContacto = document.getElementById("seccion-contacto");
+      const avisoAdmin = document.getElementById("aviso-admin");
+
+      if (seccionImpacto) seccionImpacto.style.display = "none";
+      if (seccionHistorial) seccionHistorial.style.display = "none";
+      if (seccionContacto) seccionContacto.style.display = "none";
+      if (avisoAdmin) avisoAdmin.classList.remove("hidden");
+
+      // Cargar credenciales del admin en el section de password si corresponde
+      const passwordSection = document.getElementById("password-section");
+      const provider = payload?.app_metadata?.provider || "email";
+      if (provider !== "email" && passwordSection) {
+        passwordSection.style.display = "none";
+      }
+      return;
+    }
+
+    // Inicializar inputs del formulario de contacto
+    const nombreInput = document.getElementById("nombre-input") as HTMLInputElement | null;
+    const correoInput = document.getElementById("correo-display") as HTMLInputElement | null;
+    const telefonoInput = document.getElementById("telefono-input") as HTMLInputElement | null;
+
+    // Precargar con fallback al token si falla la consulta
+    if (payload) {
+      if (nombreInput) nombreInput.value = payload.user_metadata?.full_name || payload.user_metadata?.name || "";
+      if (correoInput) correoInput.value = payload.email || "";
+      if (telefonoInput) telefonoInput.value = payload.phone || payload.user_metadata?.phone || "";
+
+      // Ocultar formulario de contraseña si el proveedor no es 'email'
+      const provider = payload.app_metadata?.provider || "email";
+      const passwordSection = document.getElementById("password-section");
+      if (provider !== "email" && passwordSection) {
+        passwordSection.style.display = "none";
+      }
+    }
+
+    // Consulta de Base de Datos para asegurar datos sincronizados en tiempo real
+    try {
+      const dbUser = await obtenerPerfil();
+      if (nombreInput && dbUser.nombre) nombreInput.value = dbUser.nombre;
+      if (correoInput && dbUser.correo) correoInput.value = dbUser.correo;
+      if (telefonoInput && dbUser.telefono) telefonoInput.value = dbUser.telefono;
+    } catch (e) {
+      console.error("No se pudo precargar perfil desde base de datos:", e);
+    }
+
+    // Cargar impacto acumulado e historial
+    const horasDisplay = document.getElementById("total-horas-impacto");
+    const eventosDisplay = document.getElementById("total-eventos-impacto");
+    const historialContainer = document.getElementById("historial-eventos");
+
+    try {
+      const impacto = await obtenerImpacto();
+      
+      if (horasDisplay) horasDisplay.innerText = impacto.total_horas.toString();
+      if (eventosDisplay) eventosDisplay.innerText = impacto.total_eventos.toString();
+
+      if (historialContainer) {
+        if (impacto.eventos_asistidos.length === 0) {
+          historialContainer.innerHTML = "Aún no tienes asistencias confirmadas en actividades.";
+        } else {
+          historialContainer.innerHTML = `
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-100 text-left text-sm">
+                <thead>
+                  <tr class="text-gray-400 font-semibold uppercase tracking-wider text-xs">
+                    <th class="py-2 px-3">Actividad</th>
+                    <th class="py-2 px-3">Lugar</th>
+                    <th class="py-2 px-3">Duración</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50 text-gray-600 font-medium">
+                  ${impacto.eventos_asistidos.map(evento => `
+                    <tr>
+                      <td class="py-3 px-3 font-bold text-secondary">${evento.titulo}</td>
+                      <td class="py-3 px-3">${evento.lugar}</td>
+                      <td class="py-3 px-3 text-primary">${evento.duracion_horas} horas</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          `;
+        }
+      }
+
+    } catch (err: any) {
+      console.error("Error al consultar impacto:", err);
+      if (err instanceof Response && (err.status === 401 || err.status === 403)) {
+        window.location.href = "/";
+      }
+    }
+  }
+
+  // Guardar Cambios del Perfil (Nombre y Teléfono)
+  document.getElementById("perfil-form")?.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const nombreInput = document.getElementById("nombre-input") as HTMLInputElement | null;
+    const telefonoInput = document.getElementById("telefono-input") as HTMLInputElement | null;
+    const btn = document.getElementById("btn-guardar") as HTMLButtonElement | null;
+    if (!nombreInput || !telefonoInput || !btn) return;
+
+    const nombre = nombreInput.value.trim();
+    const telefono = telefonoInput.value.trim();
+
+    if (!nombre) {
+      SwalApp.fire({ title: 'Campo requerido', text: 'Por favor introduce tu nombre.', icon: 'warning' });
+      return;
+    }
+    if (telefono.length !== 10 || isNaN(Number(telefono))) {
+      SwalApp.fire({ title: 'Formato incorrecto', text: 'Por favor introduce un número de teléfono de 10 dígitos numéricos.', icon: 'warning' });
+      return;
+    }
+
+    SwalApp.fire({
+      title: '¿Actualizar información?',
+      text: 'Tus datos de contacto serán modificados.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, guardar',
+      cancelButtonText: 'Cancelar'
+    }).then(async (result: any) => {
+      if (result.isConfirmed) {
+        btn.disabled = true;
+        const originalText = btn.innerText;
+        btn.innerText = "Guardando...";
+
+        try {
+          await actualizarPerfil({ nombre, telefono });
+          SwalApp.fire({
+            title: 'Éxito',
+            text: '¡Perfil de contacto actualizado con éxito!',
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false
+          }).then(() => {
+            window.location.href = "/voluntario/eventos";
+          });
+        } catch (err: any) {
+          btn.disabled = false;
+          btn.innerText = originalText;
+          console.error("Error al actualizar perfil:", err);
+          SwalApp.fire({
+            title: 'Error',
+            text: 'Error al guardar tus cambios de perfil en el servidor.',
+            icon: 'error'
+          });
+        }
+      }
+    });
+  });
+
+  // Guardar nueva contraseña (solo email)
+  document.getElementById("password-form")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const passwordInput = document.getElementById("password-input") as HTMLInputElement | null;
+    const confirmInput = document.getElementById("confirm-password-input") as HTMLInputElement | null;
+    const btn = document.getElementById("btn-password") as HTMLButtonElement | null;
+    if (!passwordInput || !confirmInput || !btn) return;
+
+    const password = passwordInput.value;
+    const confirmPassword = confirmInput.value;
+
+    if (password.length < 6) {
+      SwalApp.fire({ title: 'Contraseña corta', text: 'La contraseña debe tener mínimo 6 caracteres.', icon: 'warning' });
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      SwalApp.fire({ title: 'Contraseñas no coinciden', text: 'Las contraseñas no coinciden.', icon: 'warning' });
+      return;
+    }
+
+    btn.disabled = true;
+    const originalText = btn.innerText;
+    btn.innerText = "Actualizando...";
+
+    try {
+      const { error } = await supabase.auth.updateUser({ password });
+      if (error) throw error;
+
+      SwalApp.fire({
+        title: 'Éxito',
+        text: '¡Contraseña actualizada exitosamente!',
+        icon: 'success',
+        timer: 2000,
+        showConfirmButton: false
+      });
+      passwordInput.value = "";
+      confirmInput.value = "";
+    } catch (err: any) {
+      console.error("Error al actualizar contraseña:", err);
+      SwalApp.fire({
+        title: 'Error',
+        text: `Error al actualizar contraseña: ${err.message || "Error desconocido."}`,
+        icon: 'error'
+      });
+    } finally {
+      btn.disabled = false;
+      btn.innerText = originalText;
+    }
+  });
+
+  // Inicializar al cargar el DOM
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", cargarPerfil);
+  } else {
+    cargarPerfil();
+  }
+</script>

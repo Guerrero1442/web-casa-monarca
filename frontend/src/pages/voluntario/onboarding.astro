@@ -1,0 +1,187 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Completa tu Perfil - Casa Monarca">
+  <main class="min-h-screen flex flex-col items-center justify-center p-6 md:p-12 relative overflow-hidden bg-background">
+    <!-- Círculos decorativos del tema para estética premium -->
+    <div class="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-primary/5 blur-3xl"></div>
+    <div class="absolute -bottom-40 -left-40 w-96 h-96 rounded-full bg-secondary/5 blur-3xl"></div>
+
+    <div class="w-full max-w-lg bg-surface rounded-3xl p-8 border border-gray-100 shadow-xl flex flex-col gap-6 z-10 animate-scale-up text-left">
+      
+      <!-- Encabezado de Onboarding -->
+      <div class="text-center flex flex-col gap-2 border-b border-gray-50 pb-4">
+        <span class="text-4xl mx-auto">🦋</span>
+        <h2 class="text-2xl font-bold text-secondary tracking-tight font-display">
+          Bienvenido a Casa Monarca
+        </h2>
+        <p class="text-gray-500 text-sm">
+          Completa tu perfil obligatorio de voluntario para poder participar e inscribirte en actividades.
+        </p>
+      </div>
+
+      <!-- Formulario de Onboarding -->
+      <form id="onboarding-form" class="flex flex-col gap-4">
+        <div>
+          <label for="input-nombre" class="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
+            Nombre Completo
+          </label>
+          <input 
+            type="text" 
+            id="input-nombre" 
+            placeholder="Ej. Juan Pérez"
+            class="w-full bg-background border border-gray-200 rounded-pill px-4 py-2.5 text-sm font-medium text-secondary focus:outline-none focus:border-primary" 
+            required
+          />
+        </div>
+
+        <div>
+          <label for="input-fecha-nacimiento" class="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
+            Fecha de Nacimiento
+          </label>
+          <input 
+            type="date" 
+            id="input-fecha-nacimiento" 
+            class="w-full bg-background border border-gray-200 rounded-pill px-4 py-2.5 text-sm font-medium text-secondary focus:outline-none focus:border-primary" 
+            required
+          />
+        </div>
+
+        <div>
+          <label for="select-sexo" class="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
+            Sexo
+          </label>
+          <select 
+            id="select-sexo" 
+            class="w-full bg-background border border-gray-200 rounded-pill px-4 py-2.5 text-sm font-medium text-secondary focus:outline-none focus:border-primary"
+            required
+          >
+            <option value="">-- Selecciona una opción --</option>
+            <option value="Femenino">Femenino</option>
+            <option value="Masculino">Masculino</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="input-telefono" class="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
+            Teléfono (10 dígitos)
+          </label>
+          <input 
+            type="tel" 
+            id="input-telefono" 
+            pattern="[0-9]{10}"
+            placeholder="Ej. 8110002000"
+            class="w-full bg-background border border-gray-200 rounded-pill px-4 py-2.5 text-sm font-medium text-secondary focus:outline-none focus:border-primary" 
+            required
+          />
+        </div>
+
+        <button type="submit" id="btn-completar" class="btn-primary w-full mt-4 font-bold py-3 text-sm shadow-sm hover:shadow active:scale-98 transition-all">
+          Completar Registro
+        </button>
+      </form>
+      
+      <div class="text-center text-xs text-gray-400 mt-2 leading-relaxed">
+        Tus datos se procesan conforme a la Ley LFPDPPP de México con fines estadísticos e institucionales de Casa Monarca.
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  import { completarOnboarding } from '../../utils/api';
+
+  // Decodificador de JWT ligero para verificar la sesión
+  function parseJwt(token: string) {
+    try {
+      const base64Url = token.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      return JSON.parse(atob(base64));
+    } catch {
+      return null;
+    }
+  }
+
+  // Prellenar nombre si viene en los metadatos de login
+  function inicializarOnboarding() {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "/";
+      return;
+    }
+
+    const payload = parseJwt(token);
+    if (payload) {
+      const nombreInput = document.getElementById("input-nombre") as HTMLInputElement | null;
+      if (nombreInput) {
+        nombreInput.value = payload.user_metadata?.full_name || payload.user_metadata?.name || "";
+      }
+    }
+  }
+
+  document.getElementById("onboarding-form")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById("btn-completar") as HTMLButtonElement | null;
+    
+    const nombre = (document.getElementById("input-nombre") as HTMLInputElement).value.trim();
+    const fechaNacimiento = (document.getElementById("input-fecha-nacimiento") as HTMLInputElement).value;
+    const sexo = (document.getElementById("select-sexo") as HTMLSelectElement).value;
+    const telefono = (document.getElementById("input-telefono") as HTMLInputElement).value.trim();
+
+    if (!nombre) {
+      alert("Por favor ingresa tu nombre completo.");
+      return;
+    }
+    if (!fechaNacimiento) {
+      alert("Por favor selecciona tu fecha de nacimiento.");
+      return;
+    }
+    if (!sexo) {
+      alert("Por favor selecciona tu sexo.");
+      return;
+    }
+    if (telefono.length !== 10 || isNaN(Number(telefono))) {
+      alert("Por favor ingresa un teléfono válido de 10 dígitos.");
+      return;
+    }
+
+    // Validar que la fecha de nacimiento no sea en el futuro
+    if (new Date(fechaNacimiento) > new Date()) {
+      alert("La fecha de nacimiento no puede ser en el futuro.");
+      return;
+    }
+
+    if (btn) {
+      btn.disabled = true;
+      btn.innerText = "Guardando...";
+    }
+
+    try {
+      await completarOnboarding({
+        nombre,
+        fecha_nacimiento: fechaNacimiento,
+        sexo,
+        telefono
+      });
+
+      alert("¡Perfil completado con éxito! Bienvenido a la comunidad.");
+      window.location.href = "/voluntario/eventos";
+    } catch (err: any) {
+      console.error("Error al completar el onboarding:", err);
+      alert("Ocurrió un error al guardar tu perfil. Inténtalo nuevamente.");
+      if (btn) {
+        btn.disabled = false;
+        btn.innerText = "Completar Registro";
+      }
+    }
+  });
+
+  // Inicializar al cargar
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", inicializarOnboarding);
+  } else {
+    inicializarOnboarding();
+  }
+</script>
