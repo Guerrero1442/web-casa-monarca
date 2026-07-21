@@ -9,6 +9,14 @@ on:
       - 'README.md'
       - 'INSTRUCCIONES_LOCAL.md'
       - 'GEMINI.md'
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - 'frontend/**'
+      - 'README.md'
+      - 'INSTRUCCIONES_LOCAL.md'
+      - 'GEMINI.md'
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
