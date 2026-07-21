@@ -12,9 +12,9 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-  REGION: us-central1
+  REGION: ${{ secrets.GCP_REGION }}
   SERVICE_NAME: casa-monarca-backend
-  GAR_LOCATION: us-central1-docker.pkg.dev
+  GAR_LOCATION: ${{ secrets.GCP_REGION }}-docker.pkg.dev
   REPOSITORY_NAME: casa-monarca-repo
 
 jobs:
@@ -34,7 +34,7 @@ jobs:
         id: auth
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
@@ -59,9 +59,11 @@ jobs:
           flags: '--allow-unauthenticated'
           env_vars: |
             DATABASE_URL=${{ secrets.DATABASE_URL }}
+            DIRECT_URL=${{ secrets.DIRECT_URL }}
             SUPABASE_JWT_SECRET=${{ secrets.SUPABASE_JWT_SECRET }}
-            RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}
-            SMTP_HOST=${{ secrets.SMTP_HOST }}
-            SMTP_PORT=${{ secrets.SMTP_PORT }}
+            SMTP_HOST=${{ vars.SMTP_HOST }}
+            SMTP_PORT=${{ vars.SMTP_PORT }}
             SMTP_USER=${{ secrets.SMTP_USER }}
             SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}
+            PUBLIC_SUPABASE_URL=${{ vars.PUBLIC_SUPABASE_URL }}
+            PUBLIC_SUPABASE_ANON_KEY=${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
