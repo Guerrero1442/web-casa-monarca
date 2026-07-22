@@ -21,7 +21,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY alembic.ini .
 COPY alembic/ ./alembic/
 COPY src/ ./src/
-COPY main.py .
 
 # Exponer el puerto 8080 para Google Cloud Run
 EXPOSE 8080
