@@ -9,6 +9,14 @@ on:
       - 'README.md'
       - 'INSTRUCCIONES_LOCAL.md'
       - 'GEMINI.md'
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - 'frontend/**'
+      - 'README.md'
+      - 'INSTRUCCIONES_LOCAL.md'
+      - 'GEMINI.md'
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
@@ -21,6 +29,7 @@ jobs:
   deploy:
     name: Build & Deploy Backend
     runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     permissions:
       contents: read
