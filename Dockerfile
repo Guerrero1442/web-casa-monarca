@@ -21,10 +21,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY alembic.ini .
 COPY alembic/ ./alembic/
 COPY src/ ./src/
-COPY main.py .
 
 # Exponer el puerto 8080 para Google Cloud Run
 EXPOSE 8080
 
 # Comando de inicio del servidor ASGI
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8080"]
