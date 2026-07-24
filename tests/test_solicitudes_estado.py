@@ -8,12 +8,12 @@ from src.database import Base
 from src.usuarios.models import Usuario  # noqa: F401
 from src.menores.models import Menor    # noqa: F401
 from src.solicitudes.models import Solicitud
-from src.eventos.models import Evento
+from src.eventos.models import Evento, Reserva
 from src.solicitudes.service import recalcular_estado_solicitud, recalcular_todas_las_solicitudes
 
 
 class TestSolicitudesEstado(unittest.TestCase):
-    def test_recalculo_estado_sin_eventos(self):
+    def test_recalculo_estado_aritmético(self):
         engine = create_engine("sqlite:///:memory:")
         Base.metadata.create_all(bind=engine)
         Session = sessionmaker(bind=engine)
@@ -22,7 +22,7 @@ class TestSolicitudesEstado(unittest.TestCase):
         madre_id = uuid.uuid4()
         menor_id = uuid.uuid4()
 
-        # Solicitud para el 25/07/2026 de 09:00 a 13:00 UTC
+        # Solicitud para el 25/07/2026 de 09:00 a 13:00 UTC (4 horas)
         solicitud = Solicitud(
             id=uuid.uuid4(),
             madre_id=madre_id,
@@ -34,42 +34,65 @@ class TestSolicitudesEstado(unittest.TestCase):
         db.add(solicitud)
         db.commit()
 
-        # Al no existir eventos en BD, el estado recalculado debe ser 'Pendiente'
-        estado = recalcular_estado_solicitud(db, solicitud)
-        self.assertEqual(estado, "Pendiente")
+        # 1. Sin reservas ejecutadas -> Debe ser estrictamente 'Pendiente'
+        estado_inicial = recalcular_estado_solicitud(db, solicitud)
+        self.assertEqual(estado_inicial, "Pendiente")
 
-        # Publicar un evento para el 26/07/2026 (otro día, no intersecta)
-        evento_otro_dia = Evento(
+        # Crear un evento idéntico en horario (09:00 a 13:00)
+        evento_identico = Evento(
             id=uuid.uuid4(),
-            titulo="Evento Otro Día",
-            inicio_evento=datetime(2026, 7, 26, 9, 0, tzinfo=timezone.utc),
-            fin_evento=datetime(2026, 7, 26, 13, 0, tzinfo=timezone.utc),
+            titulo="Evento Completo",
+            inicio_evento=datetime(2026, 7, 25, 9, 0, tzinfo=timezone.utc),
+            fin_evento=datetime(2026, 7, 25, 13, 0, tzinfo=timezone.utc),
             capacidad_maxima=10,
             id_admin=uuid.uuid4(),
         )
-        db.add(evento_otro_dia)
+        db.add(evento_identico)
         db.commit()
 
-        # Debe seguir en estado 'Pendiente' porque el evento es en otra fecha
-        estado_despues = recalcular_estado_solicitud(db, solicitud)
-        self.assertEqual(estado_despues, "Pendiente")
+        # Sin reserva aún -> Sigue en 'Pendiente'
+        estado_sin_reserva = recalcular_estado_solicitud(db, solicitud)
+        self.assertEqual(estado_sin_reserva, "Pendiente")
 
-        # Publicar un evento que SÍ intersecta el 25/07/2026 (10:00 a 12:00)
-        evento_intersecta = Evento(
+        # 2. Reservar cupo para el evento idéntico -> Debe pasar a 'Cubierta' (100% cobertura)
+        reserva = Reserva(
             id=uuid.uuid4(),
-            titulo="Evento Intersecta",
-            inicio_evento=datetime(2026, 7, 25, 10, 0, tzinfo=timezone.utc),
-            fin_evento=datetime(2026, 7, 25, 12, 0, tzinfo=timezone.utc),
+            evento_id=evento_identico.id,
+            solicitud_id=solicitud.id,
+        )
+        db.add(reserva)
+        db.commit()
+
+        estado_cubierta = recalcular_estado_solicitud(db, solicitud)
+        self.assertEqual(estado_cubierta, "Cubierta")
+
+        # 3. Eliminar reserva -> Debe volver a 'Pendiente'
+        db.delete(reserva)
+        db.commit()
+
+        estado_revertido = recalcular_estado_solicitud(db, solicitud)
+        self.assertEqual(estado_revertido, "Pendiente")
+
+        # 4. Crear reserva parcial (09:00 a 11:00) -> Debe pasar a 'Parcial'
+        evento_parcial = Evento(
+            id=uuid.uuid4(),
+            titulo="Evento Parcial",
+            inicio_evento=datetime(2026, 7, 25, 9, 0, tzinfo=timezone.utc),
+            fin_evento=datetime(2026, 7, 25, 11, 0, tzinfo=timezone.utc),
             capacidad_maxima=10,
             id_admin=uuid.uuid4(),
         )
-        db.add(evento_intersecta)
+        db.add(evento_parcial)
+        reserva_parcial = Reserva(
+            id=uuid.uuid4(),
+            evento_id=evento_parcial.id,
+            solicitud_id=solicitud.id,
+        )
+        db.add(reserva_parcial)
         db.commit()
 
-        # Al haber un evento intersectado, el estado cambia a 'Parcial'
-        recalcular_todas_las_solicitudes(db)
-        db.refresh(solicitud)
-        self.assertEqual(solicitud.estado, "Parcial")
+        estado_parcial = recalcular_estado_solicitud(db, solicitud)
+        self.assertEqual(estado_parcial, "Parcial")
 
 
 if __name__ == "__main__":
