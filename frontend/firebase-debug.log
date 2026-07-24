@@ -1,0 +1,119 @@
+[debug] [2026-07-24T04:20:58.449Z] ----------------------------------------------------------------------
+[debug] [2026-07-24T04:20:58.451Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\camil\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy --only hosting
+[debug] [2026-07-24T04:20:58.451Z] CLI Version:   15.24.0
+[debug] [2026-07-24T04:20:58.452Z] Platform:      win32
+[debug] [2026-07-24T04:20:58.452Z] Node Version:  v24.11.1
+[debug] [2026-07-24T04:20:58.452Z] Detected Agent: antigravity
+[debug] [2026-07-24T04:20:58.452Z] Time:          Thu Jul 23 2026 23:20:58 GMT-0500 (hora estándar de Colombia)
+[debug] [2026-07-24T04:20:58.452Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-07-24T04:21:00.980Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-07-24T04:21:00.980Z] > authorizing via signed-in user (camiloalex2000@gmail.com)
+[debug] [2026-07-24T04:21:00.981Z] [iam] checking project web-casa-monarca-mexico for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2026-07-24T04:21:00.994Z] Checked if tokens are valid: true, expires at: 1784868825053
+[debug] [2026-07-24T04:21:00.994Z] Checked if tokens are valid: true, expires at: 1784868825053
+[debug] [2026-07-24T04:21:00.995Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/web-casa-monarca-mexico:testIamPermissions [none]
+[debug] [2026-07-24T04:21:00.996Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/web-casa-monarca-mexico:testIamPermissions  x-goog-user-project=web-casa-monarca-mexico
+[debug] [2026-07-24T04:21:00.996Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/web-casa-monarca-mexico:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-07-24T04:21:01.451Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/web-casa-monarca-mexico:testIamPermissions 200
+[debug] [2026-07-24T04:21:01.451Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/web-casa-monarca-mexico:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-07-24T04:21:01.452Z] Checked if tokens are valid: true, expires at: 1784868825053
+[debug] [2026-07-24T04:21:01.452Z] Checked if tokens are valid: true, expires at: 1784868825053
+[debug] [2026-07-24T04:21:01.452Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/web-casa-monarca-mexico [none]
+[debug] [2026-07-24T04:21:01.817Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/web-casa-monarca-mexico 200
+[debug] [2026-07-24T04:21:01.818Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/web-casa-monarca-mexico {"projectId":"web-casa-monarca-mexico","projectNumber":"147849482277","displayName":"web-casa-monarca-mexico","name":"projects/web-casa-monarca-mexico","resources":{"hostingSite":"web-casa-monarca-mexico"},"state":"ACTIVE","labels":{"firebase":"enabled"},"etag":"1_ce95b570-176f-4dd0-9ee3-5689062d34ba"}
+[info] 
+[info] === Deploying to 'web-casa-monarca-mexico'...
+[info] 
+[info] i  deploying hosting 
+[debug] [2026-07-24T04:21:01.821Z] Checked if tokens are valid: true, expires at: 1784868825053
+[debug] [2026-07-24T04:21:01.821Z] Checked if tokens are valid: true, expires at: 1784868825053
+[debug] [2026-07-24T04:21:01.821Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/web-casa-monarca-mexico/sites/cangurapp-mx [none]
+[debug] [2026-07-24T04:21:02.939Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/web-casa-monarca-mexico/sites/cangurapp-mx 200
+[debug] [2026-07-24T04:21:02.939Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/web-casa-monarca-mexico/sites/cangurapp-mx {"name":"projects/web-casa-monarca-mexico/sites/cangurapp-mx","defaultUrl":"https://cangurapp-mx.web.app","type":"USER_SITE"}
+[debug] [2026-07-24T04:21:02.941Z] Checked if tokens are valid: true, expires at: 1784868825053
+[debug] [2026-07-24T04:21:02.941Z] Checked if tokens are valid: true, expires at: 1784868825053
+[debug] [2026-07-24T04:21:02.942Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/cangurapp-mx/versions [none]
+[debug] [2026-07-24T04:21:02.942Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/cangurapp-mx/versions {"status":"CREATED","labels":{"deployment-tool":"cli-firebase"}}
+[debug] [2026-07-24T04:21:03.719Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/cangurapp-mx/versions 200
+[debug] [2026-07-24T04:21:03.719Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/cangurapp-mx/versions {"name":"projects/147849482277/sites/cangurapp-mx/versions/db50cd6b89afdd05","status":"CREATED","config":{},"labels":{"deployment-tool":"cli-firebase"}}
+[info] i  hosting[cangurapp-mx]: beginning deploy... 
+[info] i  hosting[cangurapp-mx]: found 13 files in dist 
+[debug] [2026-07-24T04:21:03.733Z] [hosting] uploading with 200 concurrency
+[debug] [2026-07-24T04:21:03.749Z] Checked if tokens are valid: true, expires at: 1784868825053
+[debug] [2026-07-24T04:21:03.749Z] Checked if tokens are valid: true, expires at: 1784868825053
+[debug] [2026-07-24T04:21:03.754Z] [hosting] hash cache [ZGlzdA] stored for 13 files
+[debug] [2026-07-24T04:21:03.754Z] [hosting][hash queue][FINAL] {"max":12,"min":3,"avg":6.076923076923077,"active":0,"complete":13,"success":13,"errored":0,"retried":0,"total":13,"elapsed":20}
+[debug] [2026-07-24T04:21:03.754Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/147849482277/sites/cangurapp-mx/versions/db50cd6b89afdd05:populateFiles [none]
+[debug] [2026-07-24T04:21:03.755Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/147849482277/sites/cangurapp-mx/versions/db50cd6b89afdd05:populateFiles {"files":{"/logo.png":"8e0f66a17dc907b392413a0a5c6fd158ac476ade3ba14c0b410667179a073ff8","/favicon.svg":"8a4cce6b4187724c37f27f83af6c96ddc5ba73af62a5758f7e870f651a11bfdb\r","/favicon.ico":"f46cf247afc9a8403dc26959e42351be4ba8c0aae027f4564a28fb995e673cff\r","/index.html":"a0753ff2e9e08ebfb8f625e753ba930d4b34a522092923c90b1e2e93a126f35b","/_astro/Navbar.astro_astro_type_script_index_0_lang.CpBkYdm_.js":"e03eca99341f23fa23b39368abea8b6fff596383a693ef5579f09933efb25b68","/_astro/solicitud.astro_astro_type_script_index_0_lang.BQZgSx1T.js":"ea8ee1be8eeb91c3d1bba1dcc97ef858a3c62e20aee178ca6fd0312082ac4118","/_astro/dashboard.astro_astro_type_script_index_0_lang.CH9cDkrg.js":"5022094bdaebd9e86603752e83bd7ac93844e0dea7921da3a7c909e6c8fba1b5","/_astro/api.CR25-brs.js":"eb6edbc041d291b10ae342f71f2b6f706cad46e333d323cead9c8ec1c2e0d14b","/_astro/index.astro_astro_type_script_index_0_lang.DCPJGN7I.js":"b9dedffe811c8fe9d421791c1b7a4a0376db20132a88b8fa93308e84384bba69","/_astro/Layout.CsRurydL.css":"8f0ad75b6f25cf7c9b3f88d620ba8b46ffdd4bd9c20849d7b094c557081a01d0","/solicitud/index.html":"671486d40ce6b9a1d22a6d3be12ba83446a1869fd33c888227382b9867258e09","/admin/dashboard/index.html":"7a32fac6003ab202feec57daa82cfdedf09e51c6994735c9037b5df36e50600b","/_astro/supabase.Cn5DeWsV.js":"f252f5a6951141ce82a3686588a35056e45364f5b096f92b2116d73fd07d29c2"}}
+[debug] [2026-07-24T04:21:04.423Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/147849482277/sites/cangurapp-mx/versions/db50cd6b89afdd05:populateFiles 200
+[debug] [2026-07-24T04:21:04.423Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/147849482277/sites/cangurapp-mx/versions/db50cd6b89afdd05:populateFiles {"uploadRequiredHashes":["a0753ff2e9e08ebfb8f625e753ba930d4b34a522092923c90b1e2e93a126f35b","e03eca99341f23fa23b39368abea8b6fff596383a693ef5579f09933efb25b68","f46cf247afc9a8403dc26959e42351be4ba8c0aae027f4564a28fb995e673cff","7a32fac6003ab202feec57daa82cfdedf09e51c6994735c9037b5df36e50600b","eb6edbc041d291b10ae342f71f2b6f706cad46e333d323cead9c8ec1c2e0d14b","b9dedffe811c8fe9d421791c1b7a4a0376db20132a88b8fa93308e84384bba69","ea8ee1be8eeb91c3d1bba1dcc97ef858a3c62e20aee178ca6fd0312082ac4118","5022094bdaebd9e86603752e83bd7ac93844e0dea7921da3a7c909e6c8fba1b5","671486d40ce6b9a1d22a6d3be12ba83446a1869fd33c888227382b9867258e09","f252f5a6951141ce82a3686588a35056e45364f5b096f92b2116d73fd07d29c2","8a4cce6b4187724c37f27f83af6c96ddc5ba73af62a5758f7e870f651a11bfdb"],"uploadUrl":"https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files"}
+[debug] [2026-07-24T04:21:04.424Z] Checked if tokens are valid: true, expires at: 1784868825053
+[debug] [2026-07-24T04:21:04.424Z] Checked if tokens are valid: true, expires at: 1784868825053
+[debug] [2026-07-24T04:21:04.424Z] Checked if tokens are valid: true, expires at: 1784868825053
+[debug] [2026-07-24T04:21:04.424Z] Checked if tokens are valid: true, expires at: 1784868825053
+[debug] [2026-07-24T04:21:04.424Z] Checked if tokens are valid: true, expires at: 1784868825053
+[debug] [2026-07-24T04:21:04.424Z] Checked if tokens are valid: true, expires at: 1784868825053
+[debug] [2026-07-24T04:21:04.425Z] Checked if tokens are valid: true, expires at: 1784868825053
+[debug] [2026-07-24T04:21:04.425Z] Checked if tokens are valid: true, expires at: 1784868825053
+[debug] [2026-07-24T04:21:04.425Z] Checked if tokens are valid: true, expires at: 1784868825053
+[debug] [2026-07-24T04:21:04.425Z] Checked if tokens are valid: true, expires at: 1784868825053
+[debug] [2026-07-24T04:21:04.425Z] Checked if tokens are valid: true, expires at: 1784868825053
+[debug] [2026-07-24T04:21:04.425Z] Checked if tokens are valid: true, expires at: 1784868825053
+[debug] [2026-07-24T04:21:04.425Z] Checked if tokens are valid: true, expires at: 1784868825053
+[debug] [2026-07-24T04:21:04.425Z] Checked if tokens are valid: true, expires at: 1784868825053
+[debug] [2026-07-24T04:21:04.425Z] Checked if tokens are valid: true, expires at: 1784868825053
+[debug] [2026-07-24T04:21:04.426Z] Checked if tokens are valid: true, expires at: 1784868825053
+[debug] [2026-07-24T04:21:04.426Z] Checked if tokens are valid: true, expires at: 1784868825053
+[debug] [2026-07-24T04:21:04.426Z] Checked if tokens are valid: true, expires at: 1784868825053
+[debug] [2026-07-24T04:21:04.426Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/a0753ff2e9e08ebfb8f625e753ba930d4b34a522092923c90b1e2e93a126f35b [none]
+[debug] [2026-07-24T04:21:04.426Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/a0753ff2e9e08ebfb8f625e753ba930d4b34a522092923c90b1e2e93a126f35b [stream]
+[debug] [2026-07-24T04:21:04.427Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/e03eca99341f23fa23b39368abea8b6fff596383a693ef5579f09933efb25b68 [none]
+[debug] [2026-07-24T04:21:04.427Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/e03eca99341f23fa23b39368abea8b6fff596383a693ef5579f09933efb25b68 [stream]
+[debug] [2026-07-24T04:21:04.427Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/7a32fac6003ab202feec57daa82cfdedf09e51c6994735c9037b5df36e50600b [none]
+[debug] [2026-07-24T04:21:04.427Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/7a32fac6003ab202feec57daa82cfdedf09e51c6994735c9037b5df36e50600b [stream]
+[debug] [2026-07-24T04:21:04.428Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/eb6edbc041d291b10ae342f71f2b6f706cad46e333d323cead9c8ec1c2e0d14b [none]
+[debug] [2026-07-24T04:21:04.428Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/eb6edbc041d291b10ae342f71f2b6f706cad46e333d323cead9c8ec1c2e0d14b [stream]
+[debug] [2026-07-24T04:21:04.428Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/b9dedffe811c8fe9d421791c1b7a4a0376db20132a88b8fa93308e84384bba69 [none]
+[debug] [2026-07-24T04:21:04.428Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/b9dedffe811c8fe9d421791c1b7a4a0376db20132a88b8fa93308e84384bba69 [stream]
+[debug] [2026-07-24T04:21:04.429Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/ea8ee1be8eeb91c3d1bba1dcc97ef858a3c62e20aee178ca6fd0312082ac4118 [none]
+[debug] [2026-07-24T04:21:04.429Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/ea8ee1be8eeb91c3d1bba1dcc97ef858a3c62e20aee178ca6fd0312082ac4118 [stream]
+[debug] [2026-07-24T04:21:04.429Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/5022094bdaebd9e86603752e83bd7ac93844e0dea7921da3a7c909e6c8fba1b5 [none]
+[debug] [2026-07-24T04:21:04.429Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/5022094bdaebd9e86603752e83bd7ac93844e0dea7921da3a7c909e6c8fba1b5 [stream]
+[debug] [2026-07-24T04:21:04.430Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/671486d40ce6b9a1d22a6d3be12ba83446a1869fd33c888227382b9867258e09 [none]
+[debug] [2026-07-24T04:21:04.430Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/671486d40ce6b9a1d22a6d3be12ba83446a1869fd33c888227382b9867258e09 [stream]
+[debug] [2026-07-24T04:21:04.430Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/f252f5a6951141ce82a3686588a35056e45364f5b096f92b2116d73fd07d29c2 [none]
+[debug] [2026-07-24T04:21:04.430Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/f252f5a6951141ce82a3686588a35056e45364f5b096f92b2116d73fd07d29c2 [stream]
+[debug] [2026-07-24T04:21:04.435Z] [hosting][populate queue][FINAL] {"max":678,"min":678,"avg":678,"active":0,"complete":1,"success":1,"errored":0,"retried":0,"total":1,"elapsed":687}
+[debug] [2026-07-24T04:21:04.435Z] [hosting] uploads queued: 11
+[debug] [2026-07-24T04:21:04.835Z] [uploadQueue] Retrying task f46cf247afc9a8403dc26959e42351be4ba8c0aae027f4564a28fb995e673cff
+[debug] [2026-07-24T04:21:04.836Z] [uploadQueue] Retrying task 8a4cce6b4187724c37f27f83af6c96ddc5ba73af62a5758f7e870f651a11bfdb
+[debug] [2026-07-24T04:21:05.040Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/b9dedffe811c8fe9d421791c1b7a4a0376db20132a88b8fa93308e84384bba69 200
+[debug] [2026-07-24T04:21:05.040Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/b9dedffe811c8fe9d421791c1b7a4a0376db20132a88b8fa93308e84384bba69 [stream]
+[debug] [2026-07-24T04:21:05.041Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/a0753ff2e9e08ebfb8f625e753ba930d4b34a522092923c90b1e2e93a126f35b 200
+[debug] [2026-07-24T04:21:05.042Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/a0753ff2e9e08ebfb8f625e753ba930d4b34a522092923c90b1e2e93a126f35b [stream]
+[debug] [2026-07-24T04:21:05.057Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/7a32fac6003ab202feec57daa82cfdedf09e51c6994735c9037b5df36e50600b 200
+[debug] [2026-07-24T04:21:05.057Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/7a32fac6003ab202feec57daa82cfdedf09e51c6994735c9037b5df36e50600b [stream]
+[debug] [2026-07-24T04:21:05.065Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/e03eca99341f23fa23b39368abea8b6fff596383a693ef5579f09933efb25b68 200
+[debug] [2026-07-24T04:21:05.065Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/e03eca99341f23fa23b39368abea8b6fff596383a693ef5579f09933efb25b68 [stream]
+[debug] [2026-07-24T04:21:05.134Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/671486d40ce6b9a1d22a6d3be12ba83446a1869fd33c888227382b9867258e09 200
+[debug] [2026-07-24T04:21:05.134Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/671486d40ce6b9a1d22a6d3be12ba83446a1869fd33c888227382b9867258e09 [stream]
+[debug] [2026-07-24T04:21:05.160Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/5022094bdaebd9e86603752e83bd7ac93844e0dea7921da3a7c909e6c8fba1b5 200
+[debug] [2026-07-24T04:21:05.160Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/5022094bdaebd9e86603752e83bd7ac93844e0dea7921da3a7c909e6c8fba1b5 [stream]
+[debug] [2026-07-24T04:21:05.214Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/f252f5a6951141ce82a3686588a35056e45364f5b096f92b2116d73fd07d29c2 200
+[debug] [2026-07-24T04:21:05.214Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/f252f5a6951141ce82a3686588a35056e45364f5b096f92b2116d73fd07d29c2 [stream]
+[debug] [2026-07-24T04:21:05.245Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/eb6edbc041d291b10ae342f71f2b6f706cad46e333d323cead9c8ec1c2e0d14b 200
+[debug] [2026-07-24T04:21:05.245Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/eb6edbc041d291b10ae342f71f2b6f706cad46e333d323cead9c8ec1c2e0d14b [stream]
+[debug] [2026-07-24T04:21:05.465Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/ea8ee1be8eeb91c3d1bba1dcc97ef858a3c62e20aee178ca6fd0312082ac4118 200
+[debug] [2026-07-24T04:21:05.465Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/cangurapp-mx/versions/db50cd6b89afdd05/files/ea8ee1be8eeb91c3d1bba1dcc97ef858a3c62e20aee178ca6fd0312082ac4118 [stream]
+[debug] [2026-07-24T04:21:05.649Z] [uploadQueue] Retrying task f46cf247afc9a8403dc26959e42351be4ba8c0aae027f4564a28fb995e673cff
+[debug] [2026-07-24T04:21:05.650Z] [uploadQueue] Retrying task 8a4cce6b4187724c37f27f83af6c96ddc5ba73af62a5758f7e870f651a11bfdb
+[info] i  hosting: uploading new files [9/11] (81%) 
+[debug] [2026-07-24T04:21:07.253Z] [uploadQueue] Retrying task f46cf247afc9a8403dc26959e42351be4ba8c0aae027f4564a28fb995e673cff
+[debug] [2026-07-24T04:21:07.253Z] [uploadQueue] Retrying task 8a4cce6b4187724c37f27f83af6c96ddc5ba73af62a5758f7e870f651a11bfdb
+[info] i  hosting: uploading new files [9/11] (81%) 
+[info] i  hosting: uploading new files [9/11] (81%) 
+[debug] [2026-07-24T04:21:10.465Z] [uploadQueue] Retrying task f46cf247afc9a8403dc26959e42351be4ba8c0aae027f4564a28fb995e673cff
+[debug] [2026-07-24T04:21:10.466Z] [uploadQueue] Retrying task 8a4cce6b4187724c37f27f83af6c96ddc5ba73af62a5758f7e870f651a11bfdb
+[info] i  hosting: uploading new files [9/11] (81%) 
+[info] i  hosting: uploading new files [9/11] (81%) 
