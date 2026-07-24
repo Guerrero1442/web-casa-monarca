@@ -3,7 +3,7 @@ from typing import List
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from src.auth.dependencies import get_current_user
+from src.auth.dependencies import get_current_user, get_current_user_opcional
 from src.database import get_db
 from src.eventos.schemas import EventoCreate, EventoResponse, ReservaResponse
 from src.eventos.service import cancelar_reserva, crear_evento, obtener_eventos_disponibles, reservar_cupo
@@ -40,7 +40,7 @@ def endpoint_crear_evento(
 @router.get("/", response_model=List[EventoResponse])
 def endpoint_listar_eventos(
     db: Session = Depends(get_db),
-    usuario_actual: Usuario = Depends(get_current_user),
+    usuario_actual: Usuario | None = Depends(get_current_user_opcional),
 ):
     return obtener_eventos_disponibles(db=db)
 

@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "web-casa-monarca-mexico"
-  }
+  },
+  "targets": {
+    "web-casa-monarca-mexico": {
+      "hosting": {
+        "cangurapp": [
+          "cangurapp-mx"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
