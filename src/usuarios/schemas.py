@@ -2,8 +2,6 @@ from datetime import date, datetime
 from uuid import UUID
 from pydantic import BaseModel, ConfigDict
 
-from src.eventos.schemas import Evento as EventoSchema
-
 
 class UsuarioBase(BaseModel):
     nombre: str
@@ -12,7 +10,7 @@ class UsuarioBase(BaseModel):
 
 class UsuarioCreate(UsuarioBase):
     telefono: str | None = None
-    rol: str = "voluntario"
+    rol: str = "madre"
     proveedor_auth: str = "email"
 
 
@@ -43,14 +41,3 @@ class UsuarioOnboarding(BaseModel):
     fecha_nacimiento: date
     sexo: str
     telefono: str
-
-
-class ImpactoVoluntario(BaseModel):
-    """Representa el impacto acumulado del voluntario en horas y eventos
-
-    asistidos.
-    """
-
-    total_horas: float
-    total_eventos: int
-    eventos_asistidos: list[EventoSchema]

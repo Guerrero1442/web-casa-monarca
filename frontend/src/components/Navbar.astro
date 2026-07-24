@@ -8,17 +8,14 @@
         <a href="/" class="flex items-center gap-2 font-bold text-xl tracking-tight hover:opacity-90 transition-opacity">
           <span class="text-primary font-extrabold text-2xl">🦋</span>
           <span class="font-display font-bold">Casa Monarca</span>
-          <span class="text-xs uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full font-semibold">Conecta</span>
+          <span class="text-xs uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full font-semibold">Cuidado Infantil</span>
         </a>
       </div>
       
       <!-- Navegación Links -->
       <div class="flex items-center gap-6">
-        <a href="/voluntario/eventos" class="text-sm font-medium hover:text-primary transition-colors py-2 px-1 border-b-2 border-transparent hover:border-primary">
-          Catálogo de Eventos
-        </a>
-        <a href="/voluntario/perfil" class="text-sm font-medium hover:text-primary transition-colors py-2 px-1 border-b-2 border-transparent hover:border-primary">
-          Mi Perfil
+        <a href="/solicitud" class="text-sm font-medium hover:text-primary transition-colors py-2 px-1 border-b-2 border-transparent hover:border-primary">
+          Solicitar Cuidado
         </a>
         <!-- Denegado por defecto (clase 'hidden' de Tailwind) -->
         <a href="/admin/dashboard" id="nav-link-admin" class="hidden text-sm font-medium hover:text-primary transition-colors py-2 px-1 border-b-2 border-transparent hover:border-primary">
@@ -27,8 +24,7 @@
         
         <!-- Botón de Simulación de Perfil / Logout -->
         <div class="flex items-center gap-3 border-l border-gray-200 pl-6">
-          <!-- Vacío en el servidor por defecto para evitar FOUC de iniciales -->
-          <div id="navbar-avatar" class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm uppercase"></div>
+          <div id="navbar-avatar" class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm uppercase">U</div>
           <button id="btn-navbar-salir" class="text-xs text-gray-500 hover:text-primary transition-colors font-semibold uppercase tracking-wider bg-transparent border-none cursor-pointer focus:outline-none">
             Salir
           </button>
@@ -57,58 +53,42 @@
     const btnSalir = document.getElementById("btn-navbar-salir");
     const linkAdmin = document.getElementById("nav-link-admin");
 
-    // Asignar fallback inicial "U" de forma dinámica por JS
-    if (avatar) {
-      avatar.innerText = "U";
-    }
+    if (avatar) avatar.innerText = "U";
 
-    // 1. Mostrar iniciales del usuario logueado en el avatar y habilitar Panel Admin para administradores
     if (token) {
       const payload = parseJwt(token);
       if (payload) {
         const email = payload.email || "";
         const nombre = payload.user_metadata?.full_name || payload.user_metadata?.name || email || "U";
         
-        // Habilitar acceso visual al Panel Admin si y sólo si es administrador
         const isAdmin = email.toLowerCase().startsWith("admin");
         if (isAdmin && linkAdmin) {
           linkAdmin.classList.remove("hidden");
         }
 
-        // Obtener las dos primeras iniciales del nombre
         const palabras = nombre.trim().split(/\s+/);
-        let iniciales = "";
+        let iniciales = "U";
         if (palabras.length >= 2 && palabras[0] && palabras[1]) {
           iniciales = (palabras[0][0] + palabras[1][0]).toUpperCase();
         } else if (palabras[0]) {
           iniciales = palabras[0].substring(0, 2).toUpperCase();
-        } else {
-          iniciales = "U";
         }
         if (avatar) avatar.innerText = iniciales;
       }
     }
 
-    // 2. Destruir sesión y redirigir al hacer click en Salir
     btnSalir?.addEventListener("click", async (e) => {
       e.preventDefault();
-      
-      // Eliminar el token del almacenamiento local
       localStorage.removeItem("token");
-
       try {
-        // Cerrar sesión en el cliente de Supabase
         await supabase.auth.signOut();
       } catch (err) {
-        console.error("Error al cerrar sesión en Supabase:", err);
+        console.error("Error al cerrar sesión:", err);
       }
-
-      // Redirigir a la landing page desautenticado
       window.location.href = "/";
     });
   }
 
-  // Inicializar al cargar el DOM
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", inicializarNavbar);
   } else {

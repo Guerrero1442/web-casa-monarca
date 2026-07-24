@@ -1,0 +1,391 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+---
+
+<Layout title="Solicitud de Cuidado Infantil - Casa Monarca">
+  <Navbar />
+  <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <div class="md:flex md:items-center md:justify-between mb-8">
+      <div class="flex-1 min-w-0">
+        <h2 class="text-2xl font-bold font-display leading-7 text-secondary sm:text-3xl sm:truncate">
+          Solicitud de Cuidado Infantil
+        </h2>
+        <p class="mt-1 text-sm text-gray-500">
+          Registra a tus hijos y solicita una franja horaria de cuidado en el centro de atención.
+        </p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Columna 1: Registro de Menor -->
+      <div class="bg-surface p-6 rounded-2xl shadow-sm border border-gray-100 h-fit">
+        <h3 class="text-lg font-bold text-secondary mb-4 flex items-center gap-2">
+          <span>👶</span> Registrar Nuevo Menor
+        </h3>
+        <form id="form-menor" class="space-y-4">
+          <div>
+            <label for="menor-nombre" class="block text-xs font-semibold uppercase tracking-wider text-gray-700 mb-1">
+              Nombre Completo
+            </label>
+            <input
+              type="text"
+              id="menor-nombre"
+              required
+              placeholder="Nombre del menor"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-primary focus:border-primary"
+            />
+          </div>
+
+          <div>
+            <label for="menor-fecha-nacimiento" class="block text-xs font-semibold uppercase tracking-wider text-gray-700 mb-1">
+              Fecha de Nacimiento
+            </label>
+            <input
+              type="date"
+              id="menor-fecha-nacimiento"
+              required
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-primary focus:border-primary"
+            />
+          </div>
+
+          <div>
+            <label for="menor-alergias" class="block text-xs font-semibold uppercase tracking-wider text-gray-700 mb-1">
+              Alergias Conocidas
+            </label>
+            <textarea
+              id="menor-alergias"
+              rows="2"
+              placeholder="Detallar alergias alimentarias o medicamentosas (o 'Ninguna')"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-primary focus:border-primary"
+            >Ninguna</textarea>
+          </div>
+
+          <div>
+            <label for="menor-requerimientos" class="block text-xs font-semibold uppercase tracking-wider text-gray-700 mb-1">
+              Requerimientos Médicos o Especiales
+            </label>
+            <textarea
+              id="menor-requerimientos"
+              rows="2"
+              placeholder="Instrucciones de cuidado o condiciones médicas (o 'Ninguno')"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-primary focus:border-primary"
+            >Ninguno</textarea>
+          </div>
+
+          <button
+            type="submit"
+            id="btn-guardar-menor"
+            class="w-full bg-secondary text-white py-2 px-4 rounded-lg font-medium text-sm hover:bg-secondary/90 transition-colors shadow-sm"
+          >
+            Guardar Menor
+          </button>
+        </form>
+      </div>
+
+      <!-- Columna 2: Crear Solicitud de Horario -->
+      <div class="bg-surface p-6 rounded-2xl shadow-sm border border-gray-100 h-fit">
+        <h3 class="text-lg font-bold text-secondary mb-4 flex items-center gap-2">
+          <span>📅</span> Solicitar Horario de Cuidado
+        </h3>
+        <form id="form-solicitud" class="space-y-4">
+          <div>
+            <label for="solicitud-menor-select" class="block text-xs font-semibold uppercase tracking-wider text-gray-700 mb-1">
+              Seleccionar Menor
+            </label>
+            <select
+              id="solicitud-menor-select"
+              required
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-primary focus:border-primary"
+            >
+              <option value="">Cargando menores registrados...</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="solicitud-inicio" class="block text-xs font-semibold uppercase tracking-wider text-gray-700 mb-1">
+              Fecha y Hora de Inicio
+            </label>
+            <input
+              type="datetime-local"
+              id="solicitud-inicio"
+              required
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-primary focus:border-primary"
+            />
+          </div>
+
+          <div>
+            <label for="solicitud-fin" class="block text-xs font-semibold uppercase tracking-wider text-gray-700 mb-1">
+              Fecha y Hora de Fin
+            </label>
+            <input
+              type="datetime-local"
+              id="solicitud-fin"
+              required
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-primary focus:border-primary"
+            />
+          </div>
+
+          <button
+            type="submit"
+            id="btn-crear-solicitud"
+            class="w-full bg-primary text-white py-2 px-4 rounded-lg font-medium text-sm hover:bg-primary/90 transition-colors shadow-sm"
+          >
+            Enviar Solicitud
+          </button>
+        </form>
+      </div>
+
+      <!-- Columna 3: Eventos Disponibles para Reserva -->
+      <div class="bg-surface p-6 rounded-2xl shadow-sm border border-gray-100">
+        <h3 class="text-lg font-bold text-secondary mb-4 flex items-center gap-2">
+          <span>🌟</span> Eventos Disponibles
+        </h3>
+        <div id="contenedor-eventos" class="space-y-4">
+          <p class="text-sm text-gray-500 animate-pulse">Cargando eventos publicados...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección Inferior: Listado de Mis Solicitudes -->
+    <div class="mt-12">
+      <h3 class="text-xl font-bold text-secondary mb-6 flex items-center gap-2">
+        <span>📋</span> Mis Solicitudes Enviadas
+      </h3>
+      <div id="contenedor-solicitudes" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <p class="text-sm text-gray-500 animate-pulse col-span-full">Cargando mis solicitudes...</p>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  import { obtenerMenores, crearMenor, obtenerSolicitudes, crearSolicitud, obtenerEventos, reservarCupo } from '../utils/api';
+
+  declare const Swal: any;
+
+  async function cargarPagina() {
+    try {
+      const menores = await obtenerMenores();
+      const selectMenor = document.getElementById("solicitud-menor-select") as HTMLSelectElement;
+      if (selectMenor) {
+        if (menores.length === 0) {
+          selectMenor.innerHTML = `<option value="">Registra primero a un menor</option>`;
+        } else {
+          selectMenor.innerHTML = menores
+            .map(m => `<option value="${m.id}">${m.nombre} (${m.fecha_nacimiento})</option>`)
+            .join("");
+        }
+      }
+
+      await renderizarSolicitudes();
+      await renderizarEventos(menores);
+    } catch (err) {
+      console.error("Error al cargar datos:", err);
+    }
+  }
+
+  async function renderizarSolicitudes() {
+    const contenedor = document.getElementById("contenedor-solicitudes");
+    if (!contenedor) return;
+
+    try {
+      const solicitudes = await obtenerSolicitudes();
+      if (solicitudes.length === 0) {
+        contenedor.innerHTML = `<p class="text-sm text-gray-500 col-span-full">No has enviado ninguna solicitud de cuidado aún.</p>`;
+        return;
+      }
+
+      contenedor.innerHTML = solicitudes.map(s => {
+        let badgeColor = "bg-amber-100 text-amber-800 border-amber-300";
+        if (s.estado === "Parcial") badgeColor = "bg-orange-100 text-orange-800 border-orange-300";
+        if (s.estado === "Cubierta") badgeColor = "bg-emerald-100 text-emerald-800 border-emerald-300";
+
+        const inicio = new Date(s.inicio_requerido).toLocaleString();
+        const fin = new Date(s.fin_requerido).toLocaleString();
+        const menorNombre = s.menor ? s.menor.nombre : "Menor no especificado";
+
+        return `
+          <div class="bg-surface p-5 rounded-xl border border-gray-200 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-start mb-3">
+                <span class="font-bold text-secondary text-base">👶 ${menorNombre}</span>
+                <span class="px-2.5 py-1 rounded-full text-xs font-semibold border ${badgeColor}">
+                  ${s.estado}
+                </span>
+              </div>
+              <div class="text-xs text-gray-600 space-y-1">
+                <p><strong>Inicio:</strong> ${inicio}</p>
+                <p><strong>Fin:</strong> ${fin}</p>
+              </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-gray-100 text-xs text-gray-4-0 text-right">
+              ID: ${s.id.substring(0, 8)}...
+            </div>
+          </div>
+        `;
+      }).join("");
+    } catch (err) {
+      contenedor.innerHTML = `<p class="text-sm text-red-500 col-span-full">Error al cargar las solicitudes.</p>`;
+    }
+  }
+
+  async function renderizarEventos(menores: any[]) {
+    const contenedor = document.getElementById("contenedor-eventos");
+    if (!contenedor) return;
+
+    try {
+      const eventos = await obtenerEventos();
+      const solicitudes = await obtenerSolicitudes();
+
+      if (eventos.length === 0) {
+        contenedor.innerHTML = `<p class="text-sm text-gray-500">No hay eventos de cuidado publicados por el administrador.</p>`;
+        return;
+      }
+
+      contenedor.innerHTML = eventos.map(ev => {
+        const inicio = new Date(ev.inicio_evento).toLocaleString();
+        const fin = new Date(ev.fin_evento).toLocaleString();
+        const cupos = ev.cupos_disponibles ?? ev.capacidad_maxima;
+
+        // Seleccionar solicitud compatible para reservar
+        const solicitudPendiente = solicitudes.find(s => s.estado !== "Cubierta");
+        const puedeReservar = cupos > 0 && solicitudPendiente;
+
+        return `
+          <div class="p-4 rounded-xl border border-gray-200 bg-gray-50/50 space-y-2">
+            <div class="flex justify-between items-center">
+              <h4 class="font-bold text-secondary text-sm">${ev.titulo}</h4>
+              <span class="text-xs font-semibold px-2 py-0.5 rounded ${cupos > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                ${cupos} cupos libres
+              </span>
+            </div>
+            ${ev.descripcion ? `<p class="text-xs text-gray-500">${ev.descripcion}</p>` : ''}
+            <div class="text-xs text-gray-600">
+              <p>🕒 ${inicio} a ${fin}</p>
+            </div>
+            ${puedeReservar ? `
+              <button
+                data-evento-id="${ev.id}"
+                data-solicitud-id="${solicitudPendiente.id}"
+                class="btn-reservar-cupo w-full mt-2 bg-primary text-white py-1.5 px-3 rounded-lg text-xs font-semibold hover:bg-primary/90 transition-colors"
+              >
+                Reservar Cupo
+              </button>
+            ` : `<p class="text-xs text-gray-400 italic">No hay solicitudes pendientes o aforo lleno</p>`}
+          </div>
+        `;
+      }).join("");
+
+      // Event Listener para botones de reserva
+      document.querySelectorAll(".btn-reservar-cupo").forEach(btn => {
+        btn.addEventListener("click", async (e) => {
+          const target = e.currentTarget as HTMLButtonElement;
+          const eventoId = target.getAttribute("data-evento-id");
+          const solicitudId = target.getAttribute("data-solicitud-id");
+
+          if (!eventoId || !solicitudId) return;
+
+          try {
+            await reservarCupo(eventoId, solicitudId);
+            if (typeof Swal !== "undefined") {
+              Swal.fire({
+                title: "¡Reserva Confirmada!",
+                text: "Se ha asignado el cupo de cuidado infantil exitosamente.",
+                icon: "success",
+                confirmButtonColor: "#C36B53"
+              });
+            }
+            await cargarPagina();
+          } catch (err: any) {
+            let msg = "Error al reservar el cupo.";
+            if (err.json) {
+              const res = await err.json();
+              msg = res.detail || msg;
+            }
+            if (typeof Swal !== "undefined") {
+              Swal.fire({ title: "Atención", text: msg, icon: "warning", confirmButtonColor: "#C36B53" });
+            }
+          }
+        });
+      });
+    } catch (err) {
+      contenedor.innerHTML = `<p class="text-sm text-red-500">Error al cargar eventos.</p>`;
+    }
+  }
+
+  // Formulario Menor Submit
+  document.getElementById("form-menor")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const nombre = (document.getElementById("menor-nombre") as HTMLInputElement).value;
+    const fecha_nacimiento = (document.getElementById("menor-fecha-nacimiento") as HTMLInputElement).value;
+    const alergias = (document.getElementById("menor-alergias") as HTMLTextAreaElement).value;
+    const requerimientos_medicos = (document.getElementById("menor-requerimientos") as HTMLTextAreaElement).value;
+
+    try {
+      await crearMenor({ nombre, fecha_nacimiento, alergias, requerimientos_medicos });
+      if (typeof Swal !== "undefined") {
+        Swal.fire({ title: "Éxito", text: "Menor registrado correctamente", icon: "success", confirmButtonColor: "#C36B53" });
+      }
+      (document.getElementById("form-menor") as HTMLFormElement).reset();
+      await cargarPagina();
+    } catch (err) {
+      if (typeof Swal !== "undefined") {
+        Swal.fire({ title: "Error", text: "No se pudo registrar al menor", icon: "error", confirmButtonColor: "#C36B53" });
+      }
+    }
+  });
+
+  // Formulario Solicitud Submit
+  document.getElementById("form-solicitud")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const menor_id = (document.getElementById("solicitud-menor-select") as HTMLSelectElement).value;
+    const inicioRaw = (document.getElementById("solicitud-inicio") as HTMLInputElement).value;
+    const finRaw = (document.getElementById("solicitud-fin") as HTMLInputElement).value;
+
+    if (!menor_id) {
+      if (typeof Swal !== "undefined") Swal.fire({ title: "Atención", text: "Por favor selecciona a un menor.", icon: "warning", confirmButtonColor: "#C36B53" });
+      return;
+    }
+
+    const inicioDate = new Date(inicioRaw);
+    const finDate = new Date(finRaw);
+
+    // Validación cliente: hora_inicio < hora_fin
+    if (inicioDate >= finDate) {
+      if (typeof Swal !== "undefined") {
+        Swal.fire({ title: "Error de Validación", text: "La fecha/hora de inicio debe ser estrictamente anterior a la de fin.", icon: "warning", confirmButtonColor: "#C36B53" });
+      }
+      return;
+    }
+
+    try {
+      await crearSolicitud({
+        menor_id,
+        inicio_requerido: inicioDate.toISOString(),
+        fin_requerido: finDate.toISOString(),
+      });
+
+      if (typeof Swal !== "undefined") {
+        Swal.fire({ title: "Solicitud Enviada", text: "Tu solicitud de cuidado infantil se registró con éxito.", icon: "success", confirmButtonColor: "#C36B53" });
+      }
+      (document.getElementById("form-solicitud") as HTMLFormElement).reset();
+      await cargarPagina();
+    } catch (err: any) {
+      let msg = "No se pudo enviar la solicitud.";
+      if (err.json) {
+        const res = await err.json();
+        msg = res.detail || msg;
+      }
+      if (typeof Swal !== "undefined") {
+        Swal.fire({ title: "Error", text: msg, icon: "error", confirmButtonColor: "#C36B53" });
+      }
+    }
+  });
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", cargarPagina);
+  } else {
+    cargarPagina();
+  }
+</script>

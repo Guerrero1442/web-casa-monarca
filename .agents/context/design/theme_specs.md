@@ -1,85 +1,42 @@
-# Sistema de Diseño Base (Tokens Visuales)
+# Especificaciones de Diseño y UI (Casa Monarca - Cuidado Infantil)
 
-## 1. Paleta de Colores
-El frontend debe implementar las siguientes variables de color de forma global:
-- **Fondo Principal (`bg-background`):** Crema claro / Beige suave (Referencia: #F5F3ED). Utilizado para el fondo general de la aplicación.
-- **Color Primario (`bg-primary`):** Terracota / Naranja quemado (Referencia: #C36B53). Utilizado para botones de acción principales (ej. "Inscribirme", "Publicar evento") y textos de énfasis (ej. "Cupos: 8/20").
-- **Color Secundario / Oscuro (`bg-secondary`):** Verde bosque oscuro (Referencia: #23352F). Utilizado para botones secundarios, encabezados principales y el contenedor principal de navegación o bordes de tarjetas activas.
-- **Superficies (`bg-surface`):** Blanco puro (Referencia: #FFFFFF). Utilizado para el interior de las tarjetas de eventos y contenedores de formularios.
-- **Acentos Neutros:** Gris claro/verde claro para botones inactivos o fondos de áreas informativas menores (ej. el recuadro de "Crear redes para acompañar...").
+## 1. Sistema de Diseño Base
+*   **Framework CSS:** Tailwind CSS.
+*   **Paleta de Colores:** Mantener un esquema de alto contraste y legibilidad. Tonos neutros para fondos y colores semánticos para los estados de las solicitudes.
+*   **Tipografía:** Sans-serif estándar (Inter o Roboto), priorizando la legibilidad y la responsividad en dispositivos móviles, dado que es el dispositivo principal de acceso para las madres.
 
-## 2. Tipografía y Textos
-- **Fuente:** Sans-serif moderna y limpia (ej. Inter o Roboto).
-- **Color de texto principal:** Verde bosque oscuro (#23352F).
-- **Color de texto secundario/metadatos:** Gris oscuro u opaco para fechas, horas y subtítulos.
+## 2. Vistas de Usuario: Madre
 
-## 3. Patrones de Componentes (UI)
-- **Botones:** Estilo "Pill" (completamente redondeados, ej. `border-radius: 9999px` o `rounded-full` en Tailwind). Sin sombras pronunciadas, diseño plano (Flat Design).
-- **Tarjetas (Cards):** Utilizadas para listar eventos y mostrar resúmenes. Fondo blanco, bordes moderadamente redondeados (`rounded-xl` o `rounded-2xl`), sin sombras pesadas, separadas por márgenes definidos. En ocasiones, presentan un borde lateral izquierdo de color (terracota, amarillo o verde) para indicar el estado del evento.
-- **Formularios:** Campos de entrada de texto con fondo blanco, bordes sutiles y esquinas redondeadas.
+### 2.1. Formulario de Solicitud (`frontend/src/pages/solicitud.astro`)
+*   **Datos del Menor:** 
+    *   Campos de texto para `nombre`.
+    *   Selector de fecha (tipo `date`) para `fecha_nacimiento` (el sistema debe calcular la edad en la vista).
+    *   Áreas de texto (Textarea) obligatorias o con opción "Ninguna" para `alergias` y `requerimientos_medicos`.
+*   **Rango Horario:** 
+    *   Selectores de tipo `time` para `hora_inicio` y `hora_fin`.
+    *   Selector de tipo `date` para `fecha_requerida`.
+*   **Validación de Interfaz:** Prevenir el envío del formulario mediante validación en el cliente si `hora_inicio` es mayor o igual a `hora_fin`.
 
-## Regla Estricta de Implementación
-El agente utilizará estos tokens de color y estilos de componentes genéricos (tarjetas, botones redondeados) al construir las vistas del frontend. El agente NO debe intentar replicar la disposición exacta de los elementos (layout) mostrada en los mockups, sino aplicar este sistema visual a las estructuras de datos que devuelva la API.
+### 2.2. Panel Principal (Dashboard Madres)
+*   **Estado de Solicitudes:** Tarjetas (Cards) indicando el estado actual de cada solicitud enviada (Pendiente, Parcial, Cubierta).
+*   **Eventos Recomendados:** Sección dinámica que lista los eventos generados por el administrador que intersectan temporalmente con las franjas horarias solicitadas.
+*   **Acciones:** Botón de confirmación (reserva) habilitado únicamente si el evento sugerido cuenta con aforo disponible.
 
+## 3. Vistas de Usuario: Administrador
 
-## 4. Configuración de Tailwind CSS
+### 3.1. Consolidado de Solicitudes (`frontend/src/pages/admin/dashboard.astro`)
+*   **Visualización:** Tabla de datos o vista de línea de tiempo (Timeline) que agrupe las solicitudes por `fecha_requerida` y franja horaria.
+*   **Métricas Operativas:** Indicadores de demanda (conteo de menores por hora/día) para facilitar la creación eficiente de eventos.
 
-// Estructura base exigida para tailwind.config.js
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  content: [
-    "./index.html",
-    "./src/**/*.{vue,js,ts,jsx,tsx}",
-    "./app/**/*.{js,ts,jsx,tsx}",
-    "./components/**/*.{js,ts,jsx,tsx}",
-  ],
-  theme: {
-    extend: {
-      colors: {
-        background: "#F5F3ED",
-        primary: {
-          DEFAULT: "#C36B53",
-          hover: "#A85A45", // Variante calculada para interacciones
-        },
-        secondary: {
-          DEFAULT: "#23352F",
-          hover: "#1A2823",
-        },
-        surface: "#FFFFFF",
-      },
-      fontFamily: {
-        sans: ['Inter', 'Roboto', 'sans-serif'],
-      },
-      borderRadius: {
-        'pill': '9999px',
-      }
-    },
-  },
-  plugins: [],
-}
+### 3.2. Creación de Eventos
+*   **Formulario:** Campos obligatorios para `fecha`, `hora_inicio`, `hora_fin` y `capacidad_maxima` (input numérico).
+*   **Interacción Asíncrona:** Al ejecutar la creación del evento, el botón de submit debe deshabilitarse y mostrar un indicador de carga (spinner), reflejando el procesamiento asíncrono (despacho de notificaciones) en el backend sin bloquear la interfaz.
 
+## 4. Componentes Reutilizables (UI Kit)
 
-/* Instrucción para el archivo CSS global del frontend */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@layer base {
-  body {
-    @apply bg-background text-secondary font-sans antialiased;
-  }
-}
-
-@layer components {
-  .btn-primary {
-    @apply bg-primary text-white font-medium py-3 px-6 rounded-pill transition-colors duration-200 hover:bg-primary-hover active:scale-95;
-  }
-  
-  .btn-secondary {
-    @apply bg-secondary text-white font-medium py-3 px-6 rounded-pill transition-colors duration-200 hover:bg-secondary-hover active:scale-95;
-  }
-
-  .card-evento {
-    @apply bg-surface rounded-2xl p-5 shadow-sm border border-gray-100 flex flex-col gap-2;
-  }
-}
+*   **CardEvento (`frontend/src/components/CardEvento.astro`):** Componente para renderizar los detalles del evento (horario, aforo disponible/máximo). Debe incluir renderizado condicional de etiquetas visuales que indiquen si la cobertura horaria es "Total" o "Parcial" respecto a la solicitud original de la madre.
+*   **BadgeEstado:** Componente de etiqueta de color estandarizada para los estados de la solicitud:
+    *   Pendiente: Tonos amarillos/ámbar.
+    *   Parcial: Tonos naranjas.
+    *   Cubierta: Tonos verdes.
+*   **ToastNotificacion:** Sistema de alertas efímeras (no bloqueantes) para confirmar la creación de eventos, el éxito de una reserva o los errores de validación.

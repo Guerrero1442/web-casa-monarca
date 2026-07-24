@@ -5,7 +5,6 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 from src.database import Base
-from src.inscripciones.models import Inscripcion  # noqa: F401
 
 
 class Usuario(Base):
@@ -19,21 +18,25 @@ class Usuario(Base):
     )
     nombre: Mapped[str] = mapped_column(String, nullable=False)
     correo: Mapped[str] = mapped_column(String, unique=True, nullable=False, index=True)
-    telefono: Mapped[str | None] = mapped_column(String, nullable=True)  # Puede ser nulo con Google/Facebook login
+    telefono: Mapped[str | None] = mapped_column(String, nullable=True)
     fecha_nacimiento: Mapped[date | None] = mapped_column(Date, nullable=True)
     sexo: Mapped[str | None] = mapped_column(String, nullable=True)
-    rol: Mapped[str] = mapped_column(String, nullable=False, default="voluntario")  # admin, voluntario
-    proveedor_auth: Mapped[str] = mapped_column(String, nullable=False, default="email")  # email, google, facebook
-    activo: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)  # Para bajas lógicas (Derechos ARCO)
+    rol: Mapped[str] = mapped_column(String, nullable=False, default="madre")  # admin, madre
+    proveedor_auth: Mapped[str] = mapped_column(String, nullable=False, default="email")
+    activo: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     creado_en: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
         default=lambda: datetime.now(timezone.utc),
     )
 
-    # Relación con Inscripciones
-    inscripciones = relationship(
-        "Inscripcion",
-        back_populates="usuario",
+    menores = relationship(
+        "Menor",
+        back_populates="madre",
+        cascade="all, delete-orphan",
+    )
+    solicitudes = relationship(
+        "Solicitud",
+        back_populates="madre",
         cascade="all, delete-orphan",
     )

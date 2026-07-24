@@ -3,110 +3,82 @@ import Layout from '../../layouts/Layout.astro';
 import Navbar from '../../components/Navbar.astro';
 ---
 
-<Layout title="Dashboard de Administración - Casa Monarca">
+<Layout title="Panel de Administración - Cuidado Infantil - Casa Monarca">
   <Navbar />
   
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8 border-t-4 border-slate-800 mt-2">
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8">
     
-    <!-- Encabezado de Dashboard -->
+    <!-- Encabezado del Dashboard -->
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-gray-100 pb-6 text-left">
       <div>
         <h1 class="text-3xl font-extrabold text-secondary tracking-tight font-display">
-          Panel de Control - Administrador
+          Panel de Control - Cuidado Infantil
         </h1>
         <p class="text-gray-500 text-sm mt-1">
-          Administra los eventos de voluntariado, edita detalles de actividades, registra asistencia y mide el impacto solidario.
+          Consolida la demanda de solicitudes de cuidado de menores y publica eventos según los rangos horarios requeridos.
         </p>
       </div>
       <div class="flex gap-3">
-        <button id="btn-abrir-crear-evento" class="btn-secondary py-2.5 px-5 text-xs font-bold flex items-center gap-1.5 shadow-sm hover:shadow active:scale-95 transition-all">
-          <span>➕</span> Crear Nuevo Evento
+        <button id="btn-abrir-crear-evento" class="bg-primary text-white py-2.5 px-5 text-sm font-bold rounded-xl flex items-center gap-1.5 shadow-sm hover:opacity-90 active:scale-95 transition-all">
+          <span>➕</span> Crear Evento de Cuidado
         </button>
       </div>
     </div>
 
-    <!-- Contenedor del Formulario de Edición (Oculto por defecto) -->
-    <div id="editar-evento-container" class="bg-surface border border-gray-100 rounded-3xl p-6 shadow-sm hidden flex flex-col gap-6 text-left animate-scale-up">
-      <div>
-        <h3 class="font-bold text-lg text-secondary tracking-tight">
-          Editar Evento Seleccionado
-        </h3>
-        <p class="text-xs text-gray-500 mt-1">
-          Modifica los metadatos principales del evento.
-        </p>
-      </div>
+    <!-- Sección 1: Consolidado de Solicitudes (Demanda) -->
+    <div class="bg-surface border border-gray-100 rounded-2xl p-6 shadow-sm">
+      <h2 class="text-xl font-bold text-secondary mb-2 flex items-center gap-2">
+        <span>📊</span> Demanda Consolidada de Cuidado
+      </h2>
+      <p class="text-xs text-gray-500 mb-6">
+        Solicitudes de las madres agrupadas por menor, requerimientos médicos y rango horario solicitado.
+      </p>
 
-      <form id="editar-evento-form" class="flex flex-col md:flex-row items-end gap-4 w-full">
-        <div class="flex-1 w-full">
-          <label for="input-edit-titulo" class="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
-            Título
-          </label>
-          <input 
-            type="text" 
-            id="input-edit-titulo" 
-            class="w-full bg-background border border-gray-200 rounded-pill px-4 py-2 text-sm font-medium text-secondary focus:outline-none focus:border-primary" 
-            required
-          />
-        </div>
-
-        <div class="flex-1 w-full">
-          <label for="input-edit-lugar" class="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
-            Lugar
-          </label>
-          <input 
-            type="text" 
-            id="input-edit-lugar" 
-            class="w-full bg-background border border-gray-200 rounded-pill px-4 py-2 text-sm font-medium text-secondary focus:outline-none focus:border-primary" 
-            required
-          />
-        </div>
-
-        <div class="w-full md:w-32">
-          <label for="input-edit-cupo" class="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
-            Cupo Máximo
-          </label>
-          <input 
-            type="number" 
-            id="input-edit-cupo" 
-            min="1"
-            class="w-full bg-background border border-gray-200 rounded-pill px-4 py-2 text-sm font-medium text-secondary focus:outline-none focus:border-primary" 
-            required
-          />
-        </div>
-
-        <div class="flex gap-2 w-full md:w-auto">
-          <button type="button" id="btn-cancelar-edicion" class="btn-secondary py-2 px-4 text-xs font-bold bg-gray-100 hover:bg-gray-200 border-none shadow-none text-secondary">
-            Cancelar
-          </button>
-          <button type="submit" id="btn-guardar-edicion" class="btn-primary py-2 px-5 text-xs font-bold shadow-sm">
-            Guardar
-          </button>
-        </div>
-      </form>
-    </div>
-
-    <!-- Catálogo de Eventos en Grid de Administración -->
-    <div id="eventos-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
-      <div class="col-span-full text-center py-12 text-gray-500 bg-surface rounded-3xl border border-gray-100 p-6">
-        Cargando eventos...
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-100 text-left text-sm">
+          <thead>
+            <tr class="text-gray-400 font-semibold uppercase tracking-wider text-xs">
+              <th class="py-3 px-4">Menor</th>
+              <th class="py-3 px-4">Alergias / Req. Médicos</th>
+              <th class="py-3 px-4">Inicio Requerido</th>
+              <th class="py-3 px-4">Fin Requerido</th>
+              <th class="py-3 px-4 text-center">Estado</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-solicitudes-body" class="divide-y divide-gray-50 text-gray-700 font-medium">
+            <tr>
+              <td colspan="5" class="text-center py-6 text-gray-500 animate-pulse">Cargando solicitudes consolidadas...</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
-    <!-- Modal de Creación de Evento (Oculto por defecto) -->
+    <!-- Sección 2: Eventos Publicados -->
+    <div>
+      <h2 class="text-xl font-bold text-secondary mb-4 flex items-center gap-2">
+        <span>🎪</span> Eventos de Cuidado Publicados
+      </h2>
+      <div id="eventos-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
+        <p class="text-sm text-gray-500 animate-pulse col-span-full">Cargando eventos...</p>
+      </div>
+    </div>
+
+    <!-- Modal de Creación de Evento -->
     <div id="crear-evento-modal" class="fixed inset-0 z-50 overflow-y-auto hidden items-center justify-center p-4">
-      <div class="fixed inset-0 bg-secondary/40 backdrop-blur-sm transition-opacity animate-fade-in" id="modal-backdrop"></div>
+      <div class="fixed inset-0 bg-secondary/40 backdrop-blur-sm transition-opacity" id="modal-backdrop"></div>
 
-      <div class="bg-surface rounded-3xl p-6 md:p-8 border border-gray-100 shadow-2xl w-full max-w-lg z-10 relative transform transition-all flex flex-col gap-6 text-left animate-scale-up">
+      <div class="bg-surface rounded-3xl p-6 md:p-8 border border-gray-100 shadow-2xl w-full max-w-lg z-10 relative transform transition-all flex flex-col gap-6 text-left">
         <button id="btn-cerrar-modal" class="absolute top-4 right-4 text-gray-400 hover:text-secondary text-xl font-bold p-1">
           ✕
         </button>
         
         <div>
           <h2 class="text-2xl font-bold text-secondary tracking-tight">
-            Crear Nuevo Evento
+            Crear Evento de Cuidado
           </h2>
           <p class="text-gray-500 text-xs mt-1">
-            Ingresa la información básica de la actividad de voluntariado.
+            Define la franja horaria y la capacidad máxima para la atención de los menores.
           </p>
         </div>
 
@@ -118,8 +90,8 @@ import Navbar from '../../components/Navbar.astro';
             <input 
               type="text" 
               id="input-titulo" 
-              placeholder="Ej. Brigada de Alimentos"
-              class="w-full bg-background border border-gray-200 rounded-pill px-4 py-2.5 text-sm font-medium text-secondary focus:outline-none focus:border-primary" 
+              placeholder="Ej. Guardería Turno Mañana"
+              class="w-full bg-background border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-medium text-secondary focus:outline-none focus:border-primary" 
               required
             />
           </div>
@@ -130,111 +102,60 @@ import Navbar from '../../components/Navbar.astro';
             </label>
             <textarea 
               id="input-descripcion" 
-              placeholder="Describe los objetivos y tareas del voluntariado..."
+              placeholder="Detalles sobre actividades o lugar dentro del centro..."
               rows="3"
-              class="w-full bg-background border border-gray-200 rounded-2xl px-4 py-2.5 text-sm font-medium text-secondary focus:outline-none focus:border-primary resize-none"
+              class="w-full bg-background border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-medium text-secondary focus:outline-none focus:border-primary resize-none"
             ></textarea>
           </div>
 
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label for="input-fecha-inicio" class="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
+              <label for="input-inicio-evento" class="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
                 Fecha/Hora Inicio
               </label>
               <input 
                 type="datetime-local" 
-                id="input-fecha-inicio" 
-                class="w-full bg-background border border-gray-200 rounded-pill px-4 py-2.5 text-sm font-medium text-secondary focus:outline-none focus:border-primary" 
+                id="input-inicio-evento" 
+                class="w-full bg-background border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-medium text-secondary focus:outline-none focus:border-primary" 
                 required
               />
             </div>
             <div>
-              <label for="input-fecha-fin" class="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
+              <label for="input-fin-evento" class="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
                 Fecha/Hora Fin
               </label>
               <input 
                 type="datetime-local" 
-                id="input-fecha-fin" 
-                class="w-full bg-background border border-gray-200 rounded-pill px-4 py-2.5 text-sm font-medium text-secondary focus:outline-none focus:border-primary" 
+                id="input-fin-evento" 
+                class="w-full bg-background border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-medium text-secondary focus:outline-none focus:border-primary" 
                 required
               />
             </div>
           </div>
 
-          <div id="duracion-display" class="text-sm font-mono mt-2 hidden text-primary font-bold">Duración estimada: <span id="duracion-valor"></span> horas</div>
-
           <div>
-            <label for="input-cupo" class="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
-              Cupo Máximo
+            <label for="input-capacidad" class="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
+              Capacidad Máxima de Menores (Aforo)
             </label>
             <input 
               type="number" 
-              id="input-cupo" 
+              id="input-capacidad" 
               min="1"
-              placeholder="10"
-              class="w-full bg-background border border-gray-200 rounded-pill px-4 py-2.5 text-sm font-medium text-secondary focus:outline-none focus:border-primary" 
+              placeholder="15"
+              class="w-full bg-background border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-medium text-secondary focus:outline-none focus:border-primary" 
               required
             />
           </div>
 
-          <div>
-            <label for="input-lugar" class="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
-              Lugar / Ubicación
-            </label>
-            <input 
-              type="text" 
-              id="input-lugar" 
-              placeholder="Ej. Comedor de Casa Monarca"
-              class="w-full bg-background border border-gray-200 rounded-pill px-4 py-2.5 text-sm font-medium text-secondary focus:outline-none focus:border-primary" 
-              required
-            />
-          </div>
-
-          <button type="submit" id="btn-guardar-evento" class="btn-primary w-full mt-4 font-bold py-3 text-sm shadow-sm hover:shadow active:scale-98 transition-all">
-            Crear Evento
+          <button
+            type="submit"
+            id="btn-guardar-evento"
+            class="w-full bg-primary text-white font-bold py-3 rounded-xl text-sm shadow-sm hover:opacity-90 transition-all flex items-center justify-center gap-2"
+          >
+            <span id="spinner-guardar" class="hidden animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span>
+            <span id="texto-guardar">Crear Evento y Notificar</span>
           </button>
         </form>
-      </div>
-    </div>
-
-    <!-- Modal de Registro de Asistencia (Oculto por defecto) -->
-    <div id="modal-asistencia" class="fixed inset-0 z-50 overflow-y-auto hidden items-center justify-center p-4">
-      <div class="fixed inset-0 bg-secondary/40 backdrop-blur-sm transition-opacity" id="asistencia-backdrop"></div>
-
-      <div class="bg-surface rounded-3xl p-6 md:p-8 border border-gray-100 shadow-2xl w-full max-w-4xl z-10 relative transform transition-all flex flex-col gap-6 text-left animate-scale-up">
-        <button id="btn-cerrar-asistencia" class="absolute top-4 right-4 text-gray-400 hover:text-secondary text-xl font-bold p-1">
-          ✕
-        </button>
-        
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-gray-100 pb-4">
-          <div>
-            <h2 class="text-2xl font-bold text-secondary tracking-tight" id="asistencia-evento-titulo">
-              Lista de Voluntarios Inscritos
-            </h2>
-            <p class="text-xs text-gray-500 mt-1">
-              Los voluntarios ya confirmados se muestran marcados de forma permanente.
-            </p>
-          </div>
-          <button id="btn-confirmar-asistencia" class="btn-primary py-2.5 px-6 text-xs font-bold shadow-sm">
-            Confirmar Asistencia Seleccionada
-          </button>
-        </div>
-        
-        <div class="overflow-x-auto max-h-[50vh]">
-          <table class="min-w-full divide-y divide-gray-100 text-left text-sm">
-            <thead>
-              <tr class="text-gray-400 font-semibold uppercase tracking-wider text-xs">
-                <th class="py-3 px-4">Voluntario</th>
-                <th class="py-3 px-4">Correo</th>
-                <th class="py-3 px-4">Teléfono</th>
-                <th class="py-3 px-4 text-center">¿Asistió?</th>
-              </tr>
-            </thead>
-            <tbody id="inscritos-table-body" class="divide-y divide-gray-50 text-gray-600 font-medium">
-              <!-- Cargado de forma dinámica -->
-            </tbody>
-          </table>
-        </div>
       </div>
     </div>
 
@@ -242,569 +163,190 @@ import Navbar from '../../components/Navbar.astro';
 </Layout>
 
 <script>
-  declare var SwalApp: any;
-  import type { Evento } from '../../utils/api';
-  import { 
-    obtenerEventos, 
-    crearEvento, 
-    actualizarEvento, 
-    eliminarEvento,
-    obtenerInscritosEvento, 
-    actualizarAsistenciaMasiva 
-  } from '../../utils/api';
+  import { obtenerPerfil, obtenerSolicitudesConsolidadas, obtenerEventos, crearEvento } from '../../utils/api';
 
-  let listaEventos: Evento[] = [];
-  let eventoSeleccionadoId = "";
+  declare const Swal: any;
 
-  // Auxiliar para decodificar JWT
-  function parseJwt(token: string): any {
-    try {
-      const base64Url = token.split(".")[1];
-      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-      return JSON.parse(atob(base64));
-    } catch {
-      return null;
-    }
-  }
-
-  // 1. Inicializar Dashboard renderizando las tarjetas en CSS Grid
   async function inicializarDashboard() {
-    const token = localStorage.getItem("token");
-    let isAdmin = false;
-    if (token) {
-      const payload = parseJwt(token);
-      const email = payload?.email || "";
-      isAdmin = email.toLowerCase().startsWith("admin");
-    }
-
-    if (!isAdmin) {
-      const main = document.querySelector("main");
-      if (main) {
-        main.innerHTML = `
-          <div class="min-h-[60vh] flex flex-col items-center justify-center text-center p-8 bg-background rounded-3xl border border-gray-100 shadow-sm mt-8 animate-scale-up">
-            <div class="text-red-500 text-6xl mb-4 font-black">🚫</div>
-            <h1 class="text-3xl font-extrabold text-secondary tracking-tight font-display mb-2">
-              Acceso Denegado
-            </h1>
-            <p class="text-gray-500 text-sm max-w-md">
-              No dispones de los permisos de administrador necesarios para visualizar esta sección. Serás redirigido al catálogo de eventos en breve.
-            </p>
-          </div>
-        `;
-      }
-      setTimeout(() => {
-        window.location.href = "/voluntario/eventos";
-      }, 3000);
-      return;
-    }
-
-    const grid = document.getElementById("eventos-grid");
-    if (!grid) return;
-
     try {
-      listaEventos = await obtenerEventos();
-      
-      if (listaEventos.length === 0) {
-        grid.innerHTML = `
-          <div class="col-span-full text-center py-12 text-gray-500 bg-surface rounded-3xl border border-gray-100 p-6">
-            No hay eventos activos creados.
+      const perfil = await obtenerPerfil();
+      if (perfil.rol !== "admin") {
+        document.querySelector("main")!.innerHTML = `
+          <div class="text-center py-16">
+            <h1 class="text-2xl font-bold text-red-600">Acceso Denegado</h1>
+            <p class="text-sm text-gray-500 mt-2">Solo los administradores pueden acceder a esta sección.</p>
           </div>
         `;
+        setTimeout(() => window.location.href = "/", 2000);
         return;
       }
 
-      grid.innerHTML = listaEventos.map(evento => {
-        const fechaStr = new Date(evento.fecha_inicio).toLocaleDateString("es-MX", { 
-          weekday: 'long', 
-          day: 'numeric', 
-          month: 'long' 
-        });
-        
-        const yaInicio = new Date(evento.fecha_inicio) <= new Date();
-        const editarAttr = yaInicio ? 'disabled' : '';
-        const editarClase = yaInicio 
-          ? 'btn-secondary py-2 px-4 text-xs font-bold flex-1 btn-editar opacity-50 cursor-not-allowed border-none' 
-          : 'btn-secondary py-2 px-4 text-xs font-bold flex-1 btn-editar hover:bg-gray-100 transition-colors';
-
-        return `
-          <div class="bg-surface border border-gray-100 rounded-3xl p-6 shadow-sm flex flex-col justify-between gap-6 hover:shadow transition-all duration-200 animate-scale-up">
-            <div class="flex flex-col gap-3">
-              <h3 class="font-extrabold text-xl text-secondary leading-tight tracking-tight">${evento.titulo}</h3>
-              <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider flex items-center gap-1.5">
-                📍 ${evento.lugar}
-              </p>
-              <p class="text-xs text-primary font-bold uppercase tracking-wider">
-                📅 ${fechaStr}
-              </p>
-            </div>
-            
-            <div class="flex flex-wrap gap-2 pt-4 border-t border-gray-50">
-              <button class="${editarClase}" data-id="${evento.id}" ${editarAttr}>
-                Editar
-              </button>
-              <button class="btn-primary py-2 px-4 text-xs font-bold flex-1 btn-asistencia shadow-sm" data-id="${evento.id}">
-                Asistencia
-              </button>
-              <button class="py-2 px-4 text-xs font-bold flex-1 text-red-600 border border-red-200 rounded-pill hover:bg-red-50 transition-colors btn-eliminar" data-id="${evento.id}">
-                Eliminar
-              </button>
-            </div>
-          </div>
-        `;
-      }).join("");
-
-      vincularAccionesTarjetas();
-
-    } catch (err: any) {
-      console.error("Error al inicializar dashboard:", err);
-      grid.innerHTML = `
-        <div class="col-span-full text-center py-12 text-red-600 bg-surface rounded-3xl border border-gray-100 p-6">
-          Ocurrió un error al obtener la lista de eventos.
-        </div>
-      `;
+      await cargarSolicitudesConsolidadas();
+      await cargarEventos();
+    } catch (err) {
+      console.error("Error al cargar dashboard de admin:", err);
     }
   }
 
-  // 2. Vincular listeners de clic a los botones del grid
-  function vincularAccionesTarjetas() {
-    // Botón Eliminar
-    document.querySelectorAll(".btn-eliminar").forEach(boton => {
-      boton.addEventListener("click", (e) => {
-        const target = e.currentTarget as HTMLButtonElement;
-        const id = target.dataset.id;
-        if (!id) return;
-
-        SwalApp.fire({
-          title: '¿Eliminar evento?',
-          text: 'Esta acción eliminará el evento y sus inscripciones asociadas de forma permanente.',
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonText: 'Sí, eliminar',
-          cancelButtonText: 'Cancelar',
-          confirmButtonColor: '#d33'
-        }).then(async (result: any) => {
-          if (result.isConfirmed) {
-            try {
-              await eliminarEvento(id);
-              SwalApp.fire({
-                title: 'Eliminado',
-                text: '¡Evento eliminado exitosamente!',
-                icon: 'success',
-                timer: 2000,
-                showConfirmButton: false
-              });
-              // Ocultar formulario de edición si el evento eliminado estaba abierto
-              if (eventoSeleccionadoId === id) {
-                document.getElementById("editar-evento-container")?.classList.add("hidden");
-              }
-              await inicializarDashboard();
-            } catch (err) {
-              console.error("Error al eliminar evento:", err);
-              SwalApp.fire({
-                title: 'Error',
-                text: 'Ocurrió un error al eliminar el evento. Verifica tus permisos.',
-                icon: 'error'
-              });
-            }
-          }
-        });
-      });
-    });
-
-    // Botón Editar
-    document.querySelectorAll(".btn-editar").forEach(boton => {
-      boton.addEventListener("click", (e) => {
-        const target = e.currentTarget as HTMLButtonElement;
-        if (target.disabled || target.classList.contains("cursor-not-allowed")) {
-          return;
-        }
-        const id = target.dataset.id;
-        if (!id) return;
-
-        const evento = listaEventos.find(evt => evt.id === id);
-        if (evento) {
-          eventoSeleccionadoId = id;
-          const editContainer = document.getElementById("editar-evento-container");
-          const inputEditTitulo = document.getElementById("input-edit-titulo") as HTMLInputElement | null;
-          const inputEditLugar = document.getElementById("input-edit-lugar") as HTMLInputElement | null;
-          const inputEditCupo = document.getElementById("input-edit-cupo") as HTMLInputElement | null;
-
-          if (inputEditTitulo && inputEditLugar && inputEditCupo) {
-            inputEditTitulo.value = evento.titulo;
-            inputEditLugar.value = evento.lugar;
-            inputEditCupo.value = evento.cupo_maximo.toString();
-            editContainer?.classList.remove("hidden");
-            editContainer?.scrollIntoView({ behavior: "smooth" });
-          }
-        }
-      });
-    });
-
-    // Botón Asistencia
-    document.querySelectorAll(".btn-asistencia").forEach(boton => {
-      boton.addEventListener("click", async (e) => {
-        const target = e.currentTarget as HTMLButtonElement;
-        const id = target.dataset.id;
-        if (!id) return;
-
-        eventoSeleccionadoId = id;
-        const evento = listaEventos.find(evt => evt.id === id);
-
-        const modalTitulo = document.getElementById("asistencia-evento-titulo");
-        if (modalTitulo && evento) {
-          modalTitulo.innerText = `Asistencia: ${evento.titulo}`;
-        }
-
-        // Abrir modal
-        const modal = document.getElementById("modal-asistencia");
-        modal?.classList.remove("hidden");
-        modal?.classList.add("flex");
-
-        await actualizarTablaInscritos();
-      });
-    });
-  }
-
-  // Cerrar Modal de Asistencia
-  const modalAsistencia = document.getElementById("modal-asistencia");
-  const btnCerrarAsistencia = document.getElementById("btn-cerrar-asistencia");
-  const backdropAsistencia = document.getElementById("asistencia-backdrop");
-
-  function cerrarAsistencia() {
-    modalAsistencia?.classList.add("hidden");
-    modalAsistencia?.classList.remove("flex");
-  }
-
-  btnCerrarAsistencia?.addEventListener("click", cerrarAsistencia);
-  backdropAsistencia?.addEventListener("click", cerrarAsistencia);
-
-  // 3. Consultar y renderizar la tabla de inscritos
-  async function actualizarTablaInscritos() {
-    const tableBody = document.getElementById("inscritos-table-body");
-    if (!tableBody || !eventoSeleccionadoId) return;
-
-    tableBody.innerHTML = '<tr><td colspan="4" class="text-center py-6">Obteniendo lista de inscritos...</td></tr>';
+  async function cargarSolicitudesConsolidadas() {
+    const body = document.getElementById("tabla-solicitudes-body");
+    if (!body) return;
 
     try {
-      const inscritos = await obtenerInscritosEvento(eventoSeleccionadoId);
-      
-      if (inscritos.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="4" class="text-center py-6 text-gray-400 font-medium">No hay voluntarios inscritos en este evento.</td></tr>';
+      const solicitudes = await obtenerSolicitudesConsolidadas();
+      if (solicitudes.length === 0) {
+        body.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-gray-400">No hay solicitudes de cuidado registradas.</td></tr>`;
         return;
       }
 
-      tableBody.innerHTML = inscritos.map(ins => {
-        const u = ins.usuario;
-        const inputDisabled = ins.asistio ? 'checked disabled class="w-4 h-4 text-primary accent-primary rounded cursor-not-allowed"' : 'class="w-4 h-4 text-primary accent-primary rounded cursor-pointer btn-check-asistio"';
-        
+      body.innerHTML = solicitudes.map(s => {
+        let badgeColor = "bg-amber-100 text-amber-800 border-amber-300";
+        if (s.estado === "Parcial") badgeColor = "bg-orange-100 text-orange-800 border-orange-300";
+        if (s.estado === "Cubierta") badgeColor = "bg-emerald-100 text-emerald-800 border-emerald-300";
+
+        const inicio = new Date(s.inicio_requerido).toLocaleString();
+        const fin = new Date(s.fin_requerido).toLocaleString();
+        const menorNombre = s.menor ? s.menor.nombre : "Desconocido";
+        const alergias = s.menor?.alergias || "Ninguna";
+        const medicos = s.menor?.requerimientos_medicos || "Ninguno";
+
         return `
           <tr>
-            <td class="py-3 px-4 text-secondary font-bold">${u.nombre}</td>
-            <td class="py-3 px-4 text-gray-500 font-medium">${u.correo}</td>
-            <td class="py-3 px-4 text-gray-400 font-medium">${u.telefono || "-"}</td>
+            <td class="py-3 px-4 text-secondary font-bold">👶 ${menorNombre}</td>
+            <td class="py-3 px-4 text-xs text-gray-600">
+              <p><strong>Alergias:</strong> ${alergias}</p>
+              <p><strong>Req:</strong> ${medicos}</p>
+            </td>
+            <td class="py-3 px-4 text-xs text-gray-600">${inicio}</td>
+            <td class="py-3 px-4 text-xs text-gray-600">${fin}</td>
             <td class="py-3 px-4 text-center">
-              <input 
-                type="checkbox" 
-                data-inscripcion-id="${ins.id}" 
-                ${inputDisabled}
-              />
+              <span class="px-2.5 py-1 rounded-full text-xs font-semibold border ${badgeColor}">
+                ${s.estado}
+              </span>
             </td>
           </tr>
         `;
       }).join("");
-
-    } catch (err: any) {
-      console.error("Error al cargar inscritos:", err);
-      tableBody.innerHTML = '<tr><td colspan="4" class="text-center py-6 text-red-600 font-semibold">Error al conectar con la API.</td></tr>';
+    } catch (err) {
+      body.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-red-500">Error al obtener las solicitudes.</td></tr>`;
     }
   }
 
-  // 4. Confirmar asistencia en lote
-  document.getElementById("btn-confirmar-asistencia")?.addEventListener("click", async (e) => {
-    e.preventDefault();
-    if (!eventoSeleccionadoId) return;
-
-    // Recoger los IDs de inscripción marcados
-    const checkboxes = document.querySelectorAll(".btn-check-asistio") as NodeListOf<HTMLInputElement>;
-    const idsConfirmados: string[] = [];
-    checkboxes.forEach(chk => {
-      if (chk.checked) {
-        const id = chk.dataset.inscripcionId;
-        if (id) idsConfirmados.push(id);
-      }
-    });
-
-    if (idsConfirmados.length === 0) {
-      SwalApp.fire({ title: 'Atención', text: 'Por favor selecciona al menos un voluntario para registrar su asistencia.', icon: 'warning' });
-      return;
-    }
-
-    const btn = e.currentTarget as HTMLButtonElement;
-    btn.disabled = true;
-    const originalText = btn.innerText;
-    btn.innerText = "Registrando...";
+  async function cargarEventos() {
+    const grid = document.getElementById("eventos-grid");
+    if (!grid) return;
 
     try {
-      await actualizarAsistenciaMasiva(eventoSeleccionadoId, idsConfirmados);
-      SwalApp.fire({
-        title: 'Operación Exitosa',
-        text: 'La asistencia ha sido registrada correctamente.',
-        icon: 'success',
-        timer: 2000,
-        showConfirmButton: false
-      }).then(() => {
-        window.location.reload();
-      });
-    } catch (err: any) {
-      console.error("Error al registrar asistencia:", err);
-      SwalApp.fire({ title: 'Error', text: 'Ocurrió un error al registrar la asistencia.', icon: 'error' });
-    } finally {
-      btn.disabled = false;
-      btn.innerText = originalText;
-    }
-  });
-
-  // 5. Control del Formulario de Edición
-  const editContainer = document.getElementById("editar-evento-container");
-  const btnCancelarEdit = document.getElementById("btn-cancelar-edicion");
-  const editForm = document.getElementById("editar-evento-form") as HTMLFormElement | null;
-
-  btnCancelarEdit?.addEventListener("click", () => {
-    editContainer?.classList.add("hidden");
-    editForm?.reset();
-    eventoSeleccionadoId = "";
-  });
-
-  editForm?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    if (!eventoSeleccionadoId) return;
-
-    const inputEditTitulo = document.getElementById("input-edit-titulo") as HTMLInputElement | null;
-    const inputEditLugar = document.getElementById("input-edit-lugar") as HTMLInputElement | null;
-    const inputEditCupo = document.getElementById("input-edit-cupo") as HTMLInputElement | null;
-
-    const titulo = inputEditTitulo?.value.trim();
-    const lugar = inputEditLugar?.value.trim();
-    const cupoMaximo = inputEditCupo ? parseInt(inputEditCupo.value) : null;
-
-    if (!titulo || !lugar || !cupoMaximo) {
-      SwalApp.fire({ title: 'Campos requeridos', text: 'Por favor completa todos los campos obligatorios.', icon: 'warning' });
-      return;
-    }
-
-    const btnGuardar = document.getElementById("btn-guardar-edicion") as HTMLButtonElement | null;
-    if (btnGuardar) {
-      btnGuardar.disabled = true;
-      btnGuardar.innerText = "Guardando...";
-    }
-
-    try {
-      await actualizarEvento(eventoSeleccionadoId, {
-        titulo,
-        lugar,
-        cupo_maximo: cupoMaximo
-      });
-
-      SwalApp.fire({
-        title: 'Operación Exitosa',
-        text: 'El evento ha sido guardado correctamente.',
-        icon: 'success',
-        timer: 2000,
-        showConfirmButton: false
-      }).then(() => {
-        window.location.reload();
-      });
-    } catch (err: any) {
-      console.error("Error al actualizar evento:", err);
-      SwalApp.fire({ title: 'Error', text: 'Ocurrió un error al actualizar el evento.', icon: 'error' });
-    } finally {
-      if (btnGuardar) {
-        btnGuardar.disabled = false;
-        btnGuardar.innerText = "Guardar";
+      const eventos = await obtenerEventos();
+      if (eventos.length === 0) {
+        grid.innerHTML = `<p class="text-sm text-gray-500 col-span-full">No se han publicado eventos de cuidado infantil.</p>`;
+        return;
       }
-    }
-  });
 
-  // --- LÓGICA DEL MODAL DE CREACIÓN DE EVENTO ---
+      grid.innerHTML = eventos.map(ev => {
+        const inicio = new Date(ev.inicio_evento).toLocaleString();
+        const fin = new Date(ev.fin_evento).toLocaleString();
+        const ocupados = ev.aforo_actual ?? 0;
+        const disponibles = ev.cupos_disponibles ?? ev.capacidad_maxima;
+
+        return `
+          <div class="bg-surface p-5 rounded-2xl border border-gray-100 shadow-sm space-y-3">
+            <div class="flex justify-between items-start">
+              <h3 class="font-bold text-secondary text-base">${ev.titulo}</h3>
+              <span class="text-xs font-semibold px-2 py-0.5 rounded bg-primary/10 text-primary">
+                Aforo: ${ocupados} / ${ev.capacidad_maxima}
+              </span>
+            </div>
+            ${ev.descripcion ? `<p class="text-xs text-gray-500">${ev.descripcion}</p>` : ''}
+            <div class="text-xs text-gray-600 space-y-1 pt-2 border-t border-gray-50">
+              <p><strong>Inicio:</strong> ${inicio}</p>
+              <p><strong>Fin:</strong> ${fin}</p>
+              <p class="text-emerald-700 font-semibold mt-1">Disponibles: ${disponibles} cupos</p>
+            </div>
+          </div>
+        `;
+      }).join("");
+    } catch (err) {
+      grid.innerHTML = `<p class="text-sm text-red-500 col-span-full">Error al cargar eventos.</p>`;
+    }
+  }
+
+  // Controlling Event Creation Modal
   const modal = document.getElementById("crear-evento-modal");
   const btnAbrir = document.getElementById("btn-abrir-crear-evento");
   const btnCerrar = document.getElementById("btn-cerrar-modal");
-  const btnCancelar = document.getElementById("btn-cancelar-crear");
-  const form = document.getElementById("crear-evento-form") as HTMLFormElement | null;
+  const form = document.getElementById("crear-evento-form") as HTMLFormElement;
 
-  function abrirModal() {
-    modal?.classList.remove("hidden");
-    modal?.classList.add("flex");
-  }
-
-  function cerrarModal() {
-    modal?.classList.add("hidden");
-    modal?.classList.remove("flex");
-    form?.reset();
-    document.getElementById("duracion-display")?.classList.add("hidden");
-  }
-
-  btnAbrir?.addEventListener("click", abrirModal);
-  btnCerrar?.addEventListener("click", cerrarModal);
-  btnCancelar?.addEventListener("click", cerrarModal);
-  document.getElementById("modal-backdrop")?.addEventListener("click", cerrarModal);
+  btnAbrir?.addEventListener("click", () => modal?.classList.remove("hidden"));
+  btnCerrar?.addEventListener("click", () => modal?.classList.add("hidden"));
+  document.getElementById("modal-backdrop")?.addEventListener("click", () => modal?.classList.add("hidden"));
 
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const btnGuardar = document.getElementById("btn-guardar-evento") as HTMLButtonElement | null;
-    if (!btnGuardar) return;
 
-    const token = localStorage.getItem("token");
-    if (!token) {
-      alert("Sesión inválida. Inicia sesión de nuevo.");
-      window.location.href = "/";
+    const titulo = (document.getElementById("input-titulo") as HTMLInputElement).value;
+    const descripcion = (document.getElementById("input-descripcion") as HTMLTextAreaElement).value;
+    const inicioRaw = (document.getElementById("input-inicio-evento") as HTMLInputElement).value;
+    const finRaw = (document.getElementById("input-fin-evento") as HTMLInputElement).value;
+    const capacidad_maxima = parseInt((document.getElementById("input-capacidad") as HTMLInputElement).value);
+
+    const inicioDate = new Date(inicioRaw);
+    const finDate = new Date(finRaw);
+
+    // Client Validation: inicio < fin
+    if (inicioDate >= finDate) {
+      if (typeof Swal !== "undefined") {
+        Swal.fire({ title: "Validación de Horario", text: "La hora de inicio debe ser estrictamente anterior a la de fin.", icon: "warning", confirmButtonColor: "#C36B53" });
+      }
       return;
     }
 
-    const payload = parseJwt(token);
-    const idAdmin = payload?.sub;
-    if (!idAdmin) {
-      alert("Error al validar tus credenciales de administrador en la sesión.");
-      window.location.href = "/";
-      return;
-    }
+    const btnSubmit = document.getElementById("btn-guardar-evento") as HTMLButtonElement;
+    const spinner = document.getElementById("spinner-guardar");
+    const texto = document.getElementById("texto-guardar");
 
-    const tituloInput = document.getElementById("input-titulo") as HTMLInputElement | null;
-    const descripcionInput = document.getElementById("input-descripcion") as HTMLTextAreaElement | null;
-    const fechaInicioInput = document.getElementById("input-fecha-inicio") as HTMLInputElement | null;
-    const fechaFinInput = document.getElementById("input-fecha-fin") as HTMLInputElement | null;
-    const cupoInput = document.getElementById("input-cupo") as HTMLInputElement | null;
-    const lugarInput = document.getElementById("input-lugar") as HTMLInputElement | null;
-
-    if (!tituloInput || !fechaInicioInput || !fechaFinInput || !cupoInput || !lugarInput) return;
-
-    const titulo = tituloInput.value;
-    const descripcion = descripcionInput ? descripcionInput.value : "";
-    const fechaInicio = fechaInicioInput.value;
-    const fechaFin = fechaFinInput.value;
-    const cupoMaximo = cupoInput.value;
-    const lugar = lugarInput.value.trim();
-
-    // Validaciones estrictas
-    if (titulo.trim().length === 0) {
-      SwalApp.fire({ title: 'Campo requerido', text: 'El título no puede estar vacío ni contener solo espacios.', icon: 'warning' });
-      return;
-    }
-
-    if (descripcion.trim().length === 0) {
-      SwalApp.fire({ title: 'Campo requerido', text: 'La descripción es inválida.', icon: 'warning' });
-      return;
-    }
-
-    const cupoNum = parseInt(cupoMaximo);
-    if (isNaN(cupoNum) || cupoNum <= 1) {
-      SwalApp.fire({ title: 'Cupo incorrecto', text: 'El cupo debe ser estrictamente superior a 1.', icon: 'warning' });
-      return;
-    }
-
-    const inicioDate = new Date(fechaInicio);
-    const finDate = new Date(fechaFin);
-    const duracionHoras = parseFloat(((finDate.getTime() - inicioDate.getTime()) / (1000 * 60 * 60)).toFixed(2));
-
-    if (inicioDate < new Date()) {
-      SwalApp.fire({ title: 'Fecha incorrecta', text: 'La fecha de inicio no puede estar en el pasado.', icon: 'warning' });
-      return;
-    }
-
-    if (finDate <= inicioDate) {
-      SwalApp.fire({ title: 'Fecha incorrecta', text: 'La fecha de fin debe ser posterior a la fecha de inicio.', icon: 'warning' });
-      return;
-    }
-
-    btnGuardar.disabled = true;
-    const originalText = btnGuardar.innerText;
-    btnGuardar.innerText = "Creando...";
+    // Asynchronous UI feedback (disable button and show spinner)
+    btnSubmit.disabled = true;
+    spinner?.classList.remove("hidden");
+    if (texto) texto.innerText = "Procesando Notificaciones...";
 
     try {
-      const nuevoEvento = await crearEvento({
+      await crearEvento({
         titulo,
-        descripcion: descripcion || undefined,
-        fecha_inicio: inicioDate.toISOString(),
-        fecha_fin: finDate.toISOString(),
-        cupo_maximo: cupoNum,
-        duracion_horas: duracionHoras,
-        lugar,
-        id_admin: idAdmin
+        descripcion,
+        inicio_evento: inicioDate.toISOString(),
+        fin_evento: finDate.toISOString(),
+        capacidad_maxima,
       });
 
-      SwalApp.fire({
-        title: 'Operación Exitosa',
-        text: 'El evento ha sido guardado correctamente.',
-        icon: 'success',
-        timer: 2000,
-        showConfirmButton: false
-      }).then(() => {
-        window.location.reload();
-      });
-    } catch (err: any) {
-      btnGuardar.disabled = false;
-      btnGuardar.innerText = originalText;
-      console.error("Error al crear evento:", err);
-      
-      if (err instanceof Response) {
-        if (err.status === 401 || err.status === 403) {
-          SwalApp.fire({ title: 'Sesión Expirada', text: 'Sesión expirada o privilegios insuficientes para crear eventos.', icon: 'error' }).then(() => {
-            window.location.href = "/";
-          });
-        } else {
-          const errData = await err.json().catch(() => ({}));
-          SwalApp.fire({ title: 'Error', text: errData.detail || "Verifica los datos del formulario.", icon: 'error' });
-        }
-      } else {
-        SwalApp.fire({ title: 'Error de Conexión', text: 'Ocurrió un error al conectar con la API.', icon: 'error' });
+      if (typeof Swal !== "undefined") {
+        Swal.fire({
+          title: "¡Evento Creado!",
+          text: "El evento ha sido registrado y las notificaciones asíncronas han sido enviadas a las madres afectadas.",
+          icon: "success",
+          confirmButtonColor: "#C36B53"
+        });
       }
+
+      form.reset();
+      modal?.classList.add("hidden");
+      await inicializarDashboard();
+    } catch (err: any) {
+      let msg = "Error al crear el evento.";
+      if (err.json) {
+        const res = await err.json();
+        msg = res.detail || msg;
+      }
+      if (typeof Swal !== "undefined") {
+        Swal.fire({ title: "Error", text: msg, icon: "error", confirmButtonColor: "#C36B53" });
+      }
+    } finally {
+      btnSubmit.disabled = false;
+      spinner?.classList.add("hidden");
+      if (texto) texto.innerText = "Crear Evento y Notificar";
     }
   });
 
-  // Función para calcular la duración dinámicamente según las fechas ingresadas
-  function calcularDuracion() {
-    const inputInicio = document.getElementById("input-fecha-inicio") as HTMLInputElement | null;
-    const inputFin = document.getElementById("input-fecha-fin") as HTMLInputElement | null;
-    const display = document.getElementById("duracion-display");
-    const valor = document.getElementById("duracion-valor");
-
-    if (!inputInicio || !inputFin || !display || !valor) return;
-
-    const fechaInicioVal = inputInicio.value;
-    const fechaFinVal = inputFin.value;
-
-    if (!fechaInicioVal || !fechaFinVal) {
-      display.classList.add("hidden");
-      return;
-    }
-
-    const inicio = new Date(fechaInicioVal);
-    const fin = new Date(fechaFinVal);
-    const difMilis = fin.getTime() - inicio.getTime();
-
-    if (isNaN(difMilis) || difMilis <= 0) {
-      display.classList.add("hidden");
-      return;
-    }
-
-    const horas = difMilis / (1000 * 60 * 60);
-    valor.innerText = parseFloat(horas.toFixed(2)).toString();
-    display.classList.remove("hidden");
-  }
-
-  // Vincular event listeners a los campos de fecha
-  const inputInicio = document.getElementById("input-fecha-inicio");
-  const inputFin = document.getElementById("input-fecha-fin");
-  if (inputInicio) {
-    inputInicio.addEventListener("input", calcularDuracion);
-    inputInicio.addEventListener("change", calcularDuracion);
-  }
-  if (inputFin) {
-    inputFin.addEventListener("input", calcularDuracion);
-    inputFin.addEventListener("change", calcularDuracion);
-  }
-
-  // Inicializar al cargar el DOM
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", inicializarDashboard);
   } else {
