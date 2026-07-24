@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from src.auth.dependencies import get_current_user
 from src.database import get_db
 from src.eventos.schemas import EventoCreate, EventoResponse, ReservaResponse
-from src.eventos.service import crear_evento, obtener_eventos_disponibles, reservar_cupo
+from src.eventos.service import cancelar_reserva, crear_evento, obtener_eventos_disponibles, reservar_cupo
 from src.usuarios.models import Usuario
 
 router = APIRouter(prefix="/eventos", tags=["eventos"])
@@ -61,3 +61,12 @@ def endpoint_reservar_cupo(
         background_tasks=background_tasks,
     )
     return reserva
+
+
+@router.delete("/reservas/{reserva_id}")
+def endpoint_cancelar_reserva(
+    reserva_id: uuid.UUID,
+    db: Session = Depends(get_db),
+    usuario_actual: Usuario = Depends(get_current_user),
+):
+    return cancelar_reserva(db=db, reserva_id=reserva_id, usuario_actual=usuario_actual)

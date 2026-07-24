@@ -19,6 +19,7 @@ export interface Solicitud {
   estado: "Pendiente" | "Parcial" | "Cubierta";
   creado_en: string;
   menor?: Menor;
+  reserva_id?: string;
 }
 
 export interface Evento {
@@ -156,6 +157,15 @@ export async function crearEvento(datos: {
 export async function reservarCupo(eventoId: string, solicitudId: string): Promise<Reserva> {
   const response = await fetch(`${API_BASE_URL}/eventos/${eventoId}/reservar?solicitud_id=${solicitudId}`, {
     method: "POST",
+    headers: getAuthHeaders(),
+  });
+  if (!response.ok) throw response;
+  return response.json();
+}
+
+export async function cancelarReserva(reservaId: string): Promise<{ mensaje: string }> {
+  const response = await fetch(`${API_BASE_URL}/eventos/reservas/${reservaId}`, {
+    method: "DELETE",
     headers: getAuthHeaders(),
   });
   if (!response.ok) throw response;

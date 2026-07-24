@@ -9,6 +9,7 @@ from src.eventos.models import Evento, Reserva
 from src.eventos.schemas import EventoCreate, EventoResponse
 from src.solicitudes.models import Solicitud
 from src.solicitudes.service import recalcular_todas_las_solicitudes, recalcular_estado_solicitud
+from src.usuarios.models import Usuario
 from src.notificaciones.service import (
     enviar_correo_solicitud_actualizada,
     enviar_correo_reserva_confirmada,
@@ -139,3 +140,40 @@ def obtener_eventos_disponibles(db: Session) -> List[EventoResponse]:
         ev_dict.cupos_disponibles = cupos
         resultado.append(ev_dict)
     return resultado
+
+
+def cancelar_reserva(
+    db: Session,
+    reserva_id: uuid.UUID,
+    usuario_actual: Usuario,
+) -> dict:
+    reserva = (
+        db.query(Reserva)
+        .options(joinedload(Reserva.solicitud))
+        .filter(Reserva.id == reserva_id)
+        .first()
+    )
+    if not reserva:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="La reserva especificada no existe.",
+        )
+
+    solicitud = reserva.solicitud
+    if usuario_actual.rol != "admin" and solicitud and solicitud.madre_id != usuario_actual.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="No tiene permisos para cancelar esta reserva.",
+        )
+
+    db.delete(reserva)
+    db.commit()
+
+    if solicitud:
+        nuevo_estado = recalcular_estado_solicitud(db, solicitud)
+        solicitud.estado = nuevo_estado
+        db.add(solicitud)
+        db.commit()
+
+    return {"mensaje": "Reserva cancelada exitosamente"}
+

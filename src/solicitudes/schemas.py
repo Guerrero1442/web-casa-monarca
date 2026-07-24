@@ -32,5 +32,6 @@ class SolicitudResponse(SolicitudBase):
     estado: str
     creado_en: datetime
     menor: Optional[MenorResponse] = None
+    reserva_id: Optional[uuid.UUID] = None
 
     model_config = ConfigDict(from_attributes=True)

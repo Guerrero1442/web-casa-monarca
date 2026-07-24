@@ -20,11 +20,9 @@ def crear_solicitud(
     db: Session = Depends(get_db),
     usuario_actual: Usuario = Depends(get_current_user),
 ):
-    # Log de depuración de objetos datetime completos (Fecha + Hora)
     logger.info(
-        f"[Endpoint Crear Solicitud] Payload recibido - inicio_requerido: {solicitud_in.inicio_requerido!r} "
-        f"(tipo: {type(solicitud_in.inicio_requerido)}), fin_requerido: {solicitud_in.fin_requerido!r} "
-        f"(tipo: {type(solicitud_in.fin_requerido)})"
+        f"[Endpoint Crear Solicitud] Payload recibido - inicio_requerido: {solicitud_in.inicio_requerido!r}, "
+        f"fin_requerido: {solicitud_in.fin_requerido!r}"
     )
 
     menor = db.query(Menor).filter(
@@ -48,7 +46,6 @@ def crear_solicitud(
     db.commit()
     db.refresh(solicitud)
 
-    # Calcular el estado inicial exacto considerando eventos existentes en BD
     nuevo_estado = recalcular_estado_solicitud(db, solicitud)
     if solicitud.estado != nuevo_estado:
         solicitud.estado = nuevo_estado
@@ -66,18 +63,24 @@ def listar_mis_solicitudes(
 ):
     solicitudes = (
         db.query(Solicitud)
-        .options(joinedload(Solicitud.menor))
+        .options(joinedload(Solicitud.menor), joinedload(Solicitud.reservas))
         .filter(Solicitud.madre_id == usuario_actual.id)
         .order_by(Solicitud.inicio_requerido.desc())
         .all()
     )
+    resultado = []
     for sol in solicitudes:
         estado_actualizado = recalcular_estado_solicitud(db, sol)
         if sol.estado != estado_actualizado:
             sol.estado = estado_actualizado
             db.add(sol)
+        
+        sol_dict = SolicitudResponse.model_validate(sol)
+        if sol.reservas:
+            sol_dict.reserva_id = sol.reservas[0].id
+        resultado.append(sol_dict)
     db.commit()
-    return solicitudes
+    return resultado
 
 
 @router.get("/consolidadas", response_model=List[SolicitudResponse])
@@ -92,14 +95,20 @@ def listar_solicitudes_consolidadas(
         )
     solicitudes = (
         db.query(Solicitud)
-        .options(joinedload(Solicitud.menor))
+        .options(joinedload(Solicitud.menor), joinedload(Solicitud.reservas))
         .order_by(Solicitud.inicio_requerido.asc())
         .all()
     )
+    resultado = []
     for sol in solicitudes:
         estado_actualizado = recalcular_estado_solicitud(db, sol)
         if sol.estado != estado_actualizado:
             sol.estado = estado_actualizado
             db.add(sol)
+        
+        sol_dict = SolicitudResponse.model_validate(sol)
+        if sol.reservas:
+            sol_dict.reserva_id = sol.reservas[0].id
+        resultado.append(sol_dict)
     db.commit()
-    return solicitudes
+    return resultado
