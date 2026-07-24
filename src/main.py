@@ -15,7 +15,7 @@ app = FastAPI(
     version="0.3.0",
 )
 
-# Configuración de CORS con soporte para dominios de Firebase, Cloud Run y localhost
+# Configuración de CORS con soporte para la nueva URL cangurapp-mx
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -23,6 +23,8 @@ app.add_middleware(
         "http://127.0.0.1:4321",
         "http://localhost:3000",
         "http://127.0.0.1:3000",
+        "https://cangurapp-mx.web.app",
+        "https://cangurapp-mx.firebaseapp.com",
         "https://web-casa-monarca-mexico.web.app",
         "https://web-casa-monarca-mexico.firebaseapp.com",
     ],
