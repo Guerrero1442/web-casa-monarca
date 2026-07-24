@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 from pydantic import BaseModel, ConfigDict, model_validator
 
@@ -13,8 +13,13 @@ class EventoBase(BaseModel):
 
     @model_validator(mode="after")
     def validar_rango_horario_evento(self):
+        if self.inicio_evento.tzinfo is None:
+            self.inicio_evento = self.inicio_evento.replace(tzinfo=timezone.utc)
+        if self.fin_evento.tzinfo is None:
+            self.fin_evento = self.fin_evento.replace(tzinfo=timezone.utc)
+
         if self.inicio_evento >= self.fin_evento:
-            raise ValueError("El horario de inicio debe ser estrictamente anterior al horario de fin del evento.")
+            raise ValueError("El horario de inicio debe ser strictly anterior al horario de fin del evento.")
         if self.capacidad_maxima <= 0:
             raise ValueError("La capacidad máxima debe ser mayor a cero.")
         return self

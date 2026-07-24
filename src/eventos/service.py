@@ -3,10 +3,12 @@ from typing import List
 from fastapi import BackgroundTasks, HTTPException, status
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import func
+from loguru import logger
 
 from src.eventos.models import Evento, Reserva
 from src.eventos.schemas import EventoCreate, EventoResponse
 from src.solicitudes.models import Solicitud
+from src.solicitudes.service import recalcular_todas_las_solicitudes, recalcular_estado_solicitud
 from src.notificaciones.service import (
     enviar_correo_solicitud_actualizada,
     enviar_correo_reserva_confirmada,
@@ -19,6 +21,9 @@ def crear_evento(
     admin_id: uuid.UUID,
     background_tasks: BackgroundTasks,
 ) -> Evento:
+    logger.info(
+        f"[Service Crear Evento] Payload - inicio_evento: {evento_in.inicio_evento!r}, fin_evento: {evento_in.fin_evento!r}"
+    )
     evento = Evento(
         titulo=evento_in.titulo,
         descripcion=evento_in.descripcion,
@@ -31,8 +36,10 @@ def crear_evento(
     db.commit()
     db.refresh(evento)
 
-    # Buscar solicitudes con intersección horaria
-    # Intersección: Solicitud.inicio_requerido < Evento.fin_evento Y Solicitud.fin_requerido > Evento.inicio_evento
+    # Recalcular el estado de todas las solicitudes para actualizar pendientes -> parciales si intersectan
+    recalcular_todas_las_solicitudes(db)
+
+    # Notificar a las madres cuyas solicitudes intersecten
     solicitudes_intersectadas = (
         db.query(Solicitud)
         .options(joinedload(Solicitud.madre))
@@ -44,9 +51,6 @@ def crear_evento(
     )
 
     for sol in solicitudes_intersectadas:
-        if sol.estado == "Pendiente":
-            sol.estado = "Parcial"
-        db.add(sol)
         if sol.madre and sol.madre.correo:
             background_tasks.add_task(
                 enviar_correo_solicitud_actualizada,
@@ -56,7 +60,6 @@ def crear_evento(
                 estado=sol.estado,
             )
 
-    db.commit()
     return evento
 
 
@@ -94,7 +97,7 @@ def reservar_cupo(
             detail="Aforo máximo alcanzado para este evento.",
         )
 
-    # Verificar si ya existe reserva
+    # Verificar si ya existe reserva para esta solicitud
     reserva_existente = db.query(Reserva).filter(Reserva.solicitud_id == solicitud_id).first()
     if reserva_existente:
         raise HTTPException(
@@ -104,13 +107,11 @@ def reservar_cupo(
 
     reserva = Reserva(evento_id=evento_id, solicitud_id=solicitud_id)
     db.add(reserva)
+    db.commit()
 
-    # Evaluar cobertura completa o parcial
-    if evento.inicio_evento <= solicitud.inicio_requerido and evento.fin_evento >= solicitud.fin_requerido:
-        solicitud.estado = "Cubierta"
-    else:
-        solicitud.estado = "Parcial"
-
+    # Recalcular el estado exacto de la solicitud tras la reserva
+    nuevo_estado = recalcular_estado_solicitud(db, solicitud)
+    solicitud.estado = nuevo_estado
     db.add(solicitud)
     db.commit()
     db.refresh(reserva)

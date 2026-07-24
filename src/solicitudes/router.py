@@ -1,12 +1,14 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session, joinedload
+from loguru import logger
 
 from src.auth.dependencies import get_current_user
 from src.database import get_db
 from src.menores.models import Menor
 from src.solicitudes.models import Solicitud
 from src.solicitudes.schemas import SolicitudCreate, SolicitudResponse
+from src.solicitudes.service import recalcular_estado_solicitud
 from src.usuarios.models import Usuario
 
 router = APIRouter(prefix="/solicitudes", tags=["solicitudes"])
@@ -18,7 +20,13 @@ def crear_solicitud(
     db: Session = Depends(get_db),
     usuario_actual: Usuario = Depends(get_current_user),
 ):
-    # Verificar que el menor pertenezca a la madre autenticada
+    # Log de depuración de objetos datetime completos (Fecha + Hora)
+    logger.info(
+        f"[Endpoint Crear Solicitud] Payload recibido - inicio_requerido: {solicitud_in.inicio_requerido!r} "
+        f"(tipo: {type(solicitud_in.inicio_requerido)}), fin_requerido: {solicitud_in.fin_requerido!r} "
+        f"(tipo: {type(solicitud_in.fin_requerido)})"
+    )
+
     menor = db.query(Menor).filter(
         Menor.id == solicitud_in.menor_id,
         Menor.madre_id == usuario_actual.id,
@@ -39,6 +47,15 @@ def crear_solicitud(
     db.add(solicitud)
     db.commit()
     db.refresh(solicitud)
+
+    # Calcular el estado inicial exacto considerando eventos existentes en BD
+    nuevo_estado = recalcular_estado_solicitud(db, solicitud)
+    if solicitud.estado != nuevo_estado:
+        solicitud.estado = nuevo_estado
+        db.add(solicitud)
+        db.commit()
+        db.refresh(solicitud)
+
     return solicitud
 
 
@@ -47,13 +64,20 @@ def listar_mis_solicitudes(
     db: Session = Depends(get_db),
     usuario_actual: Usuario = Depends(get_current_user),
 ):
-    return (
+    solicitudes = (
         db.query(Solicitud)
         .options(joinedload(Solicitud.menor))
         .filter(Solicitud.madre_id == usuario_actual.id)
         .order_by(Solicitud.inicio_requerido.desc())
         .all()
     )
+    for sol in solicitudes:
+        estado_actualizado = recalcular_estado_solicitud(db, sol)
+        if sol.estado != estado_actualizado:
+            sol.estado = estado_actualizado
+            db.add(sol)
+    db.commit()
+    return solicitudes
 
 
 @router.get("/consolidadas", response_model=List[SolicitudResponse])
@@ -66,9 +90,16 @@ def listar_solicitudes_consolidadas(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Acceso denegado: solo administradores pueden ver solicitudes consolidadas.",
         )
-    return (
+    solicitudes = (
         db.query(Solicitud)
         .options(joinedload(Solicitud.menor))
         .order_by(Solicitud.inicio_requerido.asc())
         .all()
     )
+    for sol in solicitudes:
+        estado_actualizado = recalcular_estado_solicitud(db, sol)
+        if sol.estado != estado_actualizado:
+            sol.estado = estado_actualizado
+            db.add(sol)
+    db.commit()
+    return solicitudes
