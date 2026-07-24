@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title="Casa Monarca - Cuidado Infantil" description="Plataforma de gestión de solicitudes de cuidado infantil de Casa Monarca.">
+<Layout title="Cangurapp - Cuidado Infantil" description="Plataforma de gestión de solicitudes de cuidado infantil con Cangurapp. Cuidamos hoy, construimos mañanas.">
   <main class="min-h-screen flex flex-col items-center justify-center p-6 md:p-12 relative overflow-hidden bg-background">
     <!-- Círculos decorativos -->
     <div class="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-primary/5 blur-3xl"></div>
@@ -12,19 +12,20 @@ import Layout from '../layouts/Layout.astro';
       
       <!-- Contenido Informativo (Hero Section) -->
       <div class="flex flex-col gap-6 text-left">
-        <div class="inline-flex items-center gap-2 bg-primary/10 text-primary py-1 px-3 rounded-full text-xs font-semibold w-fit">
-          <span>🦋</span> Casa Monarca - Cuidado Infantil
+        <div class="inline-flex items-center gap-2 bg-primary/10 text-primary py-1.5 px-4 rounded-full text-xs font-bold w-fit shadow-sm">
+          <img src="/logo.png" alt="Cangurapp Logo" class="h-6 w-auto object-contain rounded-full" />
+          <span>Cangurapp - Cuidado Infantil</span>
         </div>
         <h1 class="text-4xl md:text-5xl font-extrabold text-secondary tracking-tight font-display leading-tight">
-          Acompañando a las familias en cada <span class="text-primary">paso</span>.
+          Cuidamos hoy, construimos <span class="text-primary">mañanas</span>.
         </h1>
         <p class="text-gray-600 leading-relaxed text-base">
-          Plataforma para registrar menores de edad y gestionar solicitudes de cuidado infantil con intersección horaria en nuestro centro de atención en Monterrey.
+          Cangurapp es la plataforma para registrar menores de edad y solicitar turnos de cuidado infantil con intersección horaria en nuestro centro de atención.
         </p>
         <div class="flex items-center gap-4 text-xs font-semibold text-gray-500 uppercase tracking-widest mt-2">
           <span>✔ Aforo Controlado</span>
           <span>•</span>
-          <span>✔ Atención Especializada</span>
+          <span>✔ Cuidado Seguro</span>
         </div>
       </div>
 
@@ -33,11 +34,14 @@ import Layout from '../layouts/Layout.astro';
         
         <!-- Encabezado de la Tarjeta (Visible en login) -->
         <div id="login-header" class="text-center flex flex-col gap-1.5 border-b border-gray-50 pb-4">
-          <h2 class="text-2xl font-bold text-secondary tracking-tight">
-            Iniciar Sesión
-          </h2>
+          <div class="flex items-center justify-center gap-2 mb-1">
+            <img src="/logo.png" alt="Cangurapp Logo" class="h-10 w-auto object-contain rounded-full shadow-sm" />
+            <h2 class="text-2xl font-extrabold text-secondary tracking-tight font-display">
+              Cangurapp
+            </h2>
+          </div>
           <p class="text-gray-500 text-sm">
-            Ingresa tus credenciales de madre o administrador
+            Ingresa tus credenciales para acceder
           </p>
         </div>
 
@@ -70,10 +74,10 @@ import Layout from '../layouts/Layout.astro';
           </div>
 
           <div class="grid grid-cols-2 gap-3 mt-2">
-            <button type="button" id="btn-registrar" class="btn-secondary py-3 text-sm font-bold shadow-none border border-secondary/15">
+            <button type="button" id="btn-registrar" class="btn-secondary py-3 text-sm font-bold shadow-none border border-secondary/15 cursor-pointer">
               Registrarse
             </button>
-            <button type="submit" id="btn-login" class="btn-primary py-3 text-sm font-bold">
+            <button type="submit" id="btn-login" class="btn-primary py-3 text-sm font-bold cursor-pointer">
               Iniciar Sesión
             </button>
           </div>
@@ -94,10 +98,10 @@ import Layout from '../layouts/Layout.astro';
           </div>
 
           <div class="flex flex-col gap-3">
-            <a href="/solicitud" id="btn-ir-panel" class="btn-primary py-3 text-sm font-bold w-full text-center block shadow-sm">
+            <a href="/solicitud" id="btn-ir-panel" class="btn-primary py-3 text-sm font-bold w-full text-center block shadow-sm cursor-pointer">
               Ir a Solicitudes de Cuidado
             </a>
-            <button id="btn-cerrar-sesion-landing" class="btn-secondary py-3 text-sm font-bold w-full text-center block border border-secondary/15 hover:bg-gray-50">
+            <button id="btn-cerrar-sesion-landing" class="btn-secondary py-3 text-sm font-bold w-full text-center block border border-secondary/15 hover:bg-gray-50 cursor-pointer">
               Cerrar Sesión (Cambiar cuenta)
             </button>
           </div>
@@ -111,21 +115,21 @@ import Layout from '../layouts/Layout.astro';
 
         <div id="social-buttons" class="flex flex-col gap-3">
           <div class="grid grid-cols-2 gap-3">
-            <button id="btn-google" class="btn-secondary py-2.5 text-xs font-semibold flex items-center justify-center gap-2 hover:bg-secondary-hover border border-secondary/10">
+            <button id="btn-google" class="btn-secondary py-2.5 text-xs font-semibold flex items-center justify-center gap-2 hover:bg-secondary-hover border border-secondary/10 cursor-pointer">
               <span class="text-base font-bold">G</span> Google
             </button>
-            <button id="btn-facebook" class="btn-secondary py-2.5 text-xs font-semibold flex items-center justify-center gap-2 hover:bg-secondary-hover border border-secondary/10">
+            <button id="btn-facebook" class="btn-secondary py-2.5 text-xs font-semibold flex items-center justify-center gap-2 hover:bg-secondary-hover border border-secondary/10 cursor-pointer">
               <span class="text-base font-bold">f</span> Facebook
             </button>
           </div>
           
-          <button id="btn-voluntario" class="text-xs text-gray-400 hover:text-primary transition-colors font-bold underline mt-1">
+          <button id="btn-voluntario" class="text-xs text-gray-400 hover:text-primary transition-colors font-bold underline mt-1 cursor-pointer">
             Entrar de Prueba (Sin Login/Bypass)
           </button>
         </div>
 
         <div class="text-center text-xs text-gray-400 mt-2 leading-relaxed">
-          Al iniciar sesión, aceptas el tratamiento de tus datos personales conforme a la ley LFPDPPP de México.
+          Al iniciar sesión en Cangurapp, aceptas el tratamiento de tus datos personales conforme a la ley LFPDPPP de México.
         </div>
       </div>
       

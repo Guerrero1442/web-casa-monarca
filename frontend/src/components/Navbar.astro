@@ -5,20 +5,20 @@
     <div class="flex justify-between h-16">
       <div class="flex items-center">
         <!-- Logo / Marca -->
-        <a href="/" class="flex items-center gap-2 font-bold text-xl tracking-tight hover:opacity-90 transition-opacity">
-          <span class="text-primary font-extrabold text-2xl">🦋</span>
-          <span class="font-display font-bold">Casa Monarca</span>
-          <span class="text-xs uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full font-semibold">Cuidado Infantil</span>
+        <a href="/" class="flex items-center gap-3 font-bold text-xl tracking-tight hover:opacity-90 transition-opacity">
+          <img src="/logo.png" alt="Cangurapp Logo" class="h-10 w-auto object-contain rounded-full border border-primary/20 shadow-sm" />
+          <span class="font-display font-extrabold text-2xl text-secondary">Cangurapp</span>
+          <span class="text-xs uppercase bg-primary/10 text-primary px-2.5 py-0.5 rounded-full font-semibold hidden sm:inline-block">Cuidado Infantil</span>
         </a>
       </div>
       
       <!-- Navegación Links -->
       <div class="flex items-center gap-6">
-        <a href="/solicitud" class="text-sm font-medium hover:text-primary transition-colors py-2 px-1 border-b-2 border-transparent hover:border-primary">
+        <a href="/solicitud" class="text-sm font-medium hover:text-primary transition-colors py-2 px-1 border-b-2 border-transparent hover:border-primary cursor-pointer">
           Solicitar Cuidado
         </a>
         <!-- Denegado por defecto (clase 'hidden' de Tailwind) -->
-        <a href="/admin/dashboard" id="nav-link-admin" class="hidden text-sm font-medium hover:text-primary transition-colors py-2 px-1 border-b-2 border-transparent hover:border-primary">
+        <a href="/admin/dashboard" id="nav-link-admin" class="hidden text-sm font-medium hover:text-primary transition-colors py-2 px-1 border-b-2 border-transparent hover:border-primary cursor-pointer">
           Panel Admin
         </a>
         
