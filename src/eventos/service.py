@@ -106,6 +106,13 @@ def reservar_cupo(
             detail="Esta solicitud ya cuenta con una reserva confirmada.",
         )
 
+    # Validar que la solicitud efectivamente coincida en fecha y horario con el evento
+    if solicitud.inicio_requerido >= evento.fin_evento or solicitud.fin_requerido <= evento.inicio_evento:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="La solicitud seleccionada no coincide en fecha u horario con este evento de cuidado.",
+        )
+
     reserva = Reserva(evento_id=evento_id, solicitud_id=solicitud_id)
     db.add(reserva)
     db.commit()

@@ -305,8 +305,58 @@ import Navbar from '../components/Navbar.astro';
         const fin = new Date(ev.fin_evento).toLocaleString();
         const cupos = ev.cupos_disponibles ?? ev.capacidad_maxima;
 
-        const solicitudPendiente = solicitudes.find(s => s.estado !== "Cubierta");
-        const puedeReservar = cupos > 0 && solicitudPendiente;
+        const evInicio = new Date(ev.inicio_evento).getTime();
+        const evFin = new Date(ev.fin_evento).getTime();
+
+        // Filtrar estrictamente las solicitudes que intersectan la fecha y hora de este evento
+        const solicitudesCompatibles = solicitudes.filter(s => {
+          if (s.estado === "Cubierta" || s.reserva_id) return false;
+          const sInicio = new Date(s.inicio_requerido).getTime();
+          const sFin = new Date(s.fin_requerido).getTime();
+          return sInicio < evFin && sFin > evInicio;
+        });
+
+        let contenidoAccion = '';
+
+        if (cupos <= 0) {
+          contenidoAccion = `<p class="text-xs text-red-500 font-semibold italic">Aforo máximo alcanzado</p>`;
+        } else if (solicitudesCompatibles.length === 0) {
+          contenidoAccion = `<p class="text-xs text-gray-400 italic">No tienes solicitudes coincidentes con esta fecha u horario.</p>`;
+        } else if (solicitudesCompatibles.length === 1) {
+          const sComp = solicitudesCompatibles[0];
+          const menorNom = sComp.menor ? sComp.menor.nombre : "Menor";
+          contenidoAccion = `
+            <button
+              data-evento-id="${ev.id}"
+              data-solicitud-id="${sComp.id}"
+              class="btn-reservar-cupo w-full mt-2 bg-primary text-white py-1.5 px-3 rounded-lg text-xs font-semibold hover:bg-primary/90 transition-colors cursor-pointer"
+            >
+              Reservar Cupo (${menorNom})
+            </button>
+          `;
+        } else {
+          // Si hay múltiples solicitudes coincidentes, permitir seleccionar cuál reservar
+          const opciones = solicitudesCompatibles.map(s => {
+            const mNom = s.menor ? s.menor.nombre : "Menor";
+            return `<option value="${s.id}">${mNom} (${new Date(s.inicio_requerido).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})})</option>`;
+          }).join("");
+
+          contenidoAccion = `
+            <div class="space-y-2 mt-2">
+              <label class="block text-[11px] font-semibold text-gray-600">Seleccionar Solicitud Coincidente:</label>
+              <select id="select-solicitud-${ev.id}" class="w-full text-xs px-2 py-1 border border-gray-300 rounded-lg cursor-pointer">
+                ${opciones}
+              </select>
+              <button
+                data-evento-id="${ev.id}"
+                data-select-id="select-solicitud-${ev.id}"
+                class="btn-reservar-cupo-select w-full bg-primary text-white py-1.5 px-3 rounded-lg text-xs font-semibold hover:bg-primary/90 transition-colors cursor-pointer"
+              >
+                Reservar Cupo
+              </button>
+            </div>
+          `;
+        }
 
         return `
           <div class="p-4 rounded-xl border border-gray-200 bg-gray-50/50 space-y-2">
@@ -320,19 +370,12 @@ import Navbar from '../components/Navbar.astro';
             <div class="text-xs text-gray-600">
               <p>🕒 ${inicio} a ${fin}</p>
             </div>
-            ${puedeReservar ? `
-              <button
-                data-evento-id="${ev.id}"
-                data-solicitud-id="${solicitudPendiente.id}"
-                class="btn-reservar-cupo w-full mt-2 bg-primary text-white py-1.5 px-3 rounded-lg text-xs font-semibold hover:bg-primary/90 transition-colors cursor-pointer"
-              >
-                Reservar Cupo
-              </button>
-            ` : `<p class="text-xs text-gray-400 italic">No hay solicitudes pendientes o aforo lleno</p>`}
+            ${contenidoAccion}
           </div>
         `;
       }).join("");
 
+      // Listener para botón simple
       document.querySelectorAll(".btn-reservar-cupo").forEach(btn => {
         btn.addEventListener("click", async (e) => {
           const target = e.currentTarget as HTMLButtonElement;
@@ -364,6 +407,44 @@ import Navbar from '../components/Navbar.astro';
           }
         });
       });
+
+      // Listener para botón con select
+      document.querySelectorAll(".btn-reservar-cupo-select").forEach(btn => {
+        btn.addEventListener("click", async (e) => {
+          const target = e.currentTarget as HTMLButtonElement;
+          const eventoId = target.getAttribute("data-evento-id");
+          const selectId = target.getAttribute("data-select-id");
+          if (!eventoId || !selectId) return;
+
+          const selectElem = document.getElementById(selectId) as HTMLSelectElement | null;
+          const solicitudId = selectElem ? selectElem.value : null;
+
+          if (!solicitudId) return;
+
+          try {
+            await reservarCupo(eventoId, solicitudId);
+            if (typeof Swal !== "undefined") {
+              Swal.fire({
+                title: "¡Reserva Confirmada!",
+                text: "Se ha asignado el cupo de cuidado infantil exitosamente.",
+                icon: "success",
+                confirmButtonColor: "#C36B53"
+              });
+            }
+            await cargarPagina();
+          } catch (err: any) {
+            let msg = "Error al reservar el cupo.";
+            if (err.json) {
+              const res = await err.json();
+              msg = res.detail || msg;
+            }
+            if (typeof Swal !== "undefined") {
+              Swal.fire({ title: "Atención", text: msg, icon: "warning", confirmButtonColor: "#C36B53" });
+            }
+          }
+        });
+      });
+
     } catch (err) {
       contenedor.innerHTML = `<p class="text-sm text-red-500">Error al cargar eventos.</p>`;
     }
