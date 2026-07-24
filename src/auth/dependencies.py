@@ -19,7 +19,6 @@ JWKS_CACHE = {}
 
 def obtener_jwks(issuer: str) -> dict:
     """Consulta el JWKS (JSON Web Key Set) del emisor de Supabase para obtener
-
     las claves públicas de verificación de firmas asimétricas (ej. RS256).
     """
     if issuer in JWKS_CACHE:
@@ -30,7 +29,7 @@ def obtener_jwks(issuer: str) -> dict:
     try:
         req = urllib.request.Request(
             jwks_url,
-            headers={"User-Agent": "FastAPI-Backend-Casa-Monarca"}
+            headers={"User-Agent": "FastAPI-Backend-Cangurapp"}
         )
         with urllib.request.urlopen(req, timeout=5) as response:
             jwks = json.loads(response.read().decode("utf-8"))
@@ -48,21 +47,14 @@ def obtener_jwks(issuer: str) -> dict:
 def get_jwt_payload(
     credentials: HTTPAuthorizationCredentials = Depends(security_scheme),
 ) -> dict:
-    """Extrae y decodifica el token JWT de Supabase de forma segura.
-
-    Soporta verificación simétrica (HS256 con SUPABASE_JWT_SECRET) y
-    verificación asimétrica dinámica (RS256/RS384/RS512 mediante JWKS
-    obtenido del claim 'iss' del token).
-    """
+    """Extrae y decodifica el token JWT de Supabase de forma segura."""
     token = credentials.credentials
     try:
-        # 1. Obtener la cabecera no verificada para validar el algoritmo
         unverified_header = jwt.get_unverified_header(token)
         alg = unverified_header.get("alg", "HS256")
         
         logger.info(f"VERIFICANDO JWT - Algoritmo: {alg} - Headers: {unverified_header}")
 
-        # 2. Si el algoritmo es asimétrico (cualquiera que no empiece con HS, ej. RS256, ES256, EdDSA), usar JWKS
         if not alg.startswith("HS"):
             claims = jwt.get_unverified_claims(token)
             issuer = claims.get("iss")
@@ -75,11 +67,9 @@ def get_jwt_payload(
                     headers={"WWW-Authenticate": "Bearer"},
                 )
 
-            # Obtener las claves del emisor
             jwks = obtener_jwks(issuer)
             kid = unverified_header.get("kid")
 
-            # Buscar la clave correspondiente al 'kid' del token
             jwk_key = None
             for key_dict in jwks.get("keys", []):
                 if key_dict.get("kid") == kid:
@@ -101,7 +91,6 @@ def get_jwt_payload(
                 options={"verify_aud": False},
             )
         else:
-            # 3. Si es simétrico (HS256/HS384/HS512), validar con el secreto de Supabase local
             payload = jwt.decode(
                 token,
                 settings.SUPABASE_JWT_SECRET,
@@ -126,36 +115,22 @@ def get_current_user(
     payload: dict = Depends(get_jwt_payload),
     db: Session = Depends(get_db),
 ) -> Usuario:
-    """Obtiene el usuario autenticado.
-
-    Si el usuario no existe localmente, lo sincroniza extrayendo sus datos del
-    JWT.
-    """
+    """Obtiene el usuario autenticado y lo sincroniza localmente con rol 'madre' o 'admin'."""
     sub = payload.get("sub")
     if not sub:
         logger.warning(
-            "JWT decodificado con exito pero carece de identificador de usuario ('sub')."
+            "JWT decodificado con éxito pero carece de identificador de usuario ('sub')."
         )
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Token inválido: falta identificador de usuario",
         )
 
-    # Extraer metadatos de OAuth de Supabase
     app_metadata = payload.get("app_metadata", {})
     user_metadata = payload.get("user_metadata", {})
     provider = app_metadata.get("provider", "email")
-
-    # Obtener el teléfono del payload de Supabase
     telefono = payload.get("phone") or user_metadata.get("phone")
 
-    # Log de nivel WARNING si el payload de Google/Facebook no contiene teléfono
-    if provider in ["google", "facebook"] and not telefono:
-        logger.warning(
-            f"Trazabilidad OAuth - El payload de {provider} para el usuario ID {sub} no contiene el campo 'telefono'."
-        )
-
-    # Validar que sub sea un UUID válido
     try:
         user_uuid = uuid.UUID(sub)
     except ValueError:
@@ -167,11 +142,9 @@ def get_current_user(
             detail="Identificador de usuario inválido",
         )
 
-    # Buscar usuario en la base de datos local
     user = db.query(Usuario).filter(Usuario.id == user_uuid).first()
 
     if not user:
-        # Sincronización automática de nuevos usuarios OAuth
         email = payload.get("email") or user_metadata.get("email")
         nombre = (
             user_metadata.get("full_name")
@@ -180,34 +153,26 @@ def get_current_user(
         )
 
         if not email:
-            logger.warning(
-                f"Sincronizacion OAuth fallida - El payload del usuario {sub} carece de correo electronico."
-            )
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Falta el correo en el token de autenticación",
             )
 
         try:
-            # Verificar colisión de correo (recreación de usuario en Supabase con mismo email pero distinto ID)
             usuario_existente = db.query(Usuario).filter(Usuario.correo == email).first()
             if usuario_existente:
                 logger.warning(
-                    f"Colision de identidad detectada: El correo {email} ya existe en PostgreSQL con ID {usuario_existente.id} "
-                    f"pero Supabase envio una firma con nuevo ID {user_uuid}. Limpiando registro obsoleto..."
+                    f"Colisión de identidad detectada para {email}. Reemplazando con ID {user_uuid}..."
                 )
                 db.delete(usuario_existente)
-                db.flush()  # Liberar el índice único de correo en la BD antes del commit
+                db.flush()
 
-            logger.info(
-                f"Sincronizando nuevo usuario {email} con ID {sub} desde OAuth provider '{provider}'."
-            )
-            rol_usuario = "admin" if email.lower().startswith("admin") else "voluntario"
+            rol_usuario = "admin" if email.lower().startswith("admin") else "madre"
             user = Usuario(
                 id=user_uuid,
                 nombre=nombre,
                 correo=email,
-                telefono=telefono,  # Guardar si viene del proveedor
+                telefono=telefono,
                 rol=rol_usuario,
                 proveedor_auth=provider,
                 activo=True,
@@ -222,7 +187,7 @@ def get_current_user(
             )
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Error al registrar el usuario localmente o resolver colisión de identidad",
+                detail="Error al registrar el usuario localmente",
             )
 
     if not user.activo:
@@ -235,11 +200,6 @@ def get_current_user(
 
 
 def require_role(roles_permitidos: list[str]):
-    """Dependencia parametrizada para el control de acceso basado en roles
-
-    (RBAC).
-    """
-
     def dependecia_rol(current_user: Usuario = Depends(get_current_user)) -> Usuario:
         if current_user.rol not in roles_permitidos:
             raise HTTPException(
@@ -251,31 +211,10 @@ def require_role(roles_permitidos: list[str]):
     return dependecia_rol
 
 
-def require_phone_verified(
-    current_user: Usuario = Depends(get_current_user),
-) -> Usuario:
-    """Aplica la Restricción OAuth:
-
-    Bloquea las inscripciones si el usuario de Google/Facebook no tiene un
-    teléfono registrado.
-    """
-    if current_user.proveedor_auth in ["google", "facebook"]:
-        if not current_user.telefono:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Acceso denegado: Captura obligatoria de telefono en perfil.",
-            )
-    return current_user
-
-
 def get_current_user_opcional(
     request: Request,
     db: Session = Depends(get_db),
 ) -> Usuario | None:
-    """Extrae y valida el JWT si la cabecera Authorization está presente,
-
-    pero no falla si no lo está. Sincroniza al usuario si es nuevo.
-    """
     auth_header = request.headers.get("Authorization")
     if not auth_header or not auth_header.startswith("Bearer "):
         return None
@@ -330,7 +269,7 @@ def get_current_user_opcional(
             )
             provider = payload.get("app_metadata", {}).get("provider", "email")
             telefono = payload.get("phone") or payload.get("user_metadata", {}).get("phone")
-            rol_usuario = "admin" if email.lower().startswith("admin") else "voluntario"
+            rol_usuario = "admin" if email.lower().startswith("admin") else "madre"
             
             user = Usuario(
                 id=user_uuid,
@@ -348,4 +287,3 @@ def get_current_user_opcional(
         return user if user.activo else None
     except Exception:
         return None
-
